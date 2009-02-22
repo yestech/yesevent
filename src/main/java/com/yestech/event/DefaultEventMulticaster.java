@@ -1,24 +1,23 @@
 package com.yestech.event;
 
-import com.google.inject.Inject;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author A.J. Wright
  */
-public class DefaultEventMulticaster<EVENT extends IEvent, RESULT extends Serializable>
+public class DefaultEventMulticaster<EVENT extends IEvent, RESULT extends Serializable> implements IEventMulticaster<EVENT,RESULT>
 {
 
-    private final HashMap<Class, List<IListener>> listenerMap = new HashMap<Class, List<IListener>>();
+    private final Multimap<Class, IListener> listenerMap = new ArrayListMultimap<Class, IListener>();
 
 
-    @Inject
-    public DefaultEventMulticaster(List<IListener> listeners) {
+    public void init(List<IListener> listeners) {
 
         for (IListener listener : listeners)
         {
@@ -27,19 +26,13 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT extends Serial
             if (listenedEvents != null) {
                 for (Class<? extends IEvent> eventClass : listenedEvents.value())
                 {
-
-                    List<IListener> list = listenerMap.get(eventClass);
-                    if(list == null) {
-                        list = new ArrayList<IListener>();
-                        listenerMap.put(eventClass, list);
-                    }
-                    list.add(listener);
+                    listenerMap.put(eventClass, listener);
                 }
             }
         }
     }
 
-    Map<Class, List<IListener>> getListenerMap() {
+    Multimap<Class, IListener> getListenerMap() {
         return listenerMap;
     }
 
@@ -48,7 +41,7 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT extends Serial
     public List<RESULT> process(EVENT event) {
         List<RESULT> results = new ArrayList<RESULT>();
 
-        List<IListener> list = listenerMap.get(event.getClass());
+        Collection<IListener> list = listenerMap.get(event.getClass());
         if (list != null && !list.isEmpty()) {
             for (IListener listener : list)
             {
