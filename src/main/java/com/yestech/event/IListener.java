@@ -1,16 +1,12 @@
-/*Copyright(c) 2004-2008, iovation, inc. All rights reserved.
- *
- * Original Author:  ${user}
- * Original Date:    ${date}
- * Last Modified Date: $$DateTime$$
- */
 package com.yestech.event;
 
 import java.io.Serializable;
 
 /**
- * @author $$Author$$
- * @version $$Revision$$
+ *
+ * @author A.J. Wright
+ * @param <EVENT> An instance of IEvent
+ * @param <RESULT> An instance of Serializable
  */
 public interface IListener<EVENT extends IEvent, RESULT extends Serializable>
 {
