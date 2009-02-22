@@ -1,27 +1,19 @@
-/*Copyright(c) 2004-2008, iovation, inc. All rights reserved.
- *
- * Original Author:  ${user}
- * Original Date:    ${date}
- * Last Modified Date: $$DateTime$$
- */
+
 package com.yestech.event;
 
-import com.google.inject.*;
 import com.google.common.collect.Multimap;
+import com.google.inject.*;
 import com.yestech.event.guice.MulticasterBinder;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
-import org.junit.Test;
-import org.junit.Assert;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 import java.io.Serializable;
-import java.util.Map;
 import java.util.Collection;
 
 /**
- * @author $$Author$$
- * @version $$Revision$$
+ * @author A.J. Wright
  */
 public class DefaultEventMulticasterTest
 {
