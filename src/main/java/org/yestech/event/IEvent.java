@@ -1,4 +1,4 @@
-package com.yestech.event;
+package org.yestech.event;
 
 /**
  * @author A.J. Wright 

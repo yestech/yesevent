@@ -1,9 +1,8 @@
-
-package com.yestech.event;
+package org.yestech.event;
 
 import com.google.common.collect.Multimap;
 import com.google.inject.*;
-import com.yestech.event.guice.MulticasterBinder;
+import org.yestech.event.guice.MulticasterBinder;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import static org.junit.Assert.*;

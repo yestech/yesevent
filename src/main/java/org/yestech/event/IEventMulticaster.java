@@ -4,7 +4,7 @@
  * Original Date:    ${date}
  * Last Modified Date: $$DateTime$$
  */
-package com.yestech.event;
+package org.yestech.event;
 
 import java.io.Serializable;
 import java.util.List;

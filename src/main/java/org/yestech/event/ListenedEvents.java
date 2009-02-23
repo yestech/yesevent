@@ -1,4 +1,4 @@
-package com.yestech.event;
+package org.yestech.event;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

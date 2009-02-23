@@ -1,4 +1,4 @@
-package com.yestech.event;
+package org.yestech.event;
 
 import java.io.Serializable;
 

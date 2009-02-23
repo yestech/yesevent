@@ -4,11 +4,11 @@
  * Original Date:    ${date}
  * Last Modified Date: $$DateTime$$
  */
-package com.yestech.event.guice;
+package org.yestech.event.guice;
 
 import com.google.inject.Binder;
-import com.yestech.event.IEventMulticaster;
-import com.yestech.event.IListener;
+import org.yestech.event.IEventMulticaster;
+import org.yestech.event.IListener;
 
 import java.util.ArrayList;
 import java.util.List;
