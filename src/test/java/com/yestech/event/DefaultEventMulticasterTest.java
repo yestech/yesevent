@@ -89,9 +89,9 @@ public class DefaultEventMulticasterTest
         }
 
         @Override
-        public Serializable handle(IEvent iEvent)
+        public void handle(IEvent iEvent, Serializable serializable)
         {
-            return 1;
+
         }
     }
 
@@ -99,9 +99,9 @@ public class DefaultEventMulticasterTest
     public class Listener2 implements IListener
     {
         @Override
-        public Serializable handle(IEvent iEvent)
+        public void handle(IEvent iEvent, Serializable serializable)
         {
-            return 2;
+
         }
     }
 
@@ -109,9 +109,9 @@ public class DefaultEventMulticasterTest
     public class Listener3 implements IListener
     {
         @Override
-        public Serializable handle(IEvent iEvent)
+        public void handle(IEvent iEvent, Serializable serializable)
         {
-            return 3;
+
         }
     }
 

@@ -38,19 +38,14 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT extends Serial
 
 
     @SuppressWarnings({"unchecked"})
-    public List<RESULT> process(EVENT event) {
-        List<RESULT> results = new ArrayList<RESULT>();
-
+    public void process(EVENT event, RESULT result) {
         Collection<IListener> list = listenerMap.get(event.getClass());
         if (list != null && !list.isEmpty()) {
             for (IListener listener : list)
             {
-                RESULT result = (RESULT) listener.handle(event);
-                results.add(result);
+                listener.handle(event, result);
             }
         }
-
-        return results;
     }
 
 
