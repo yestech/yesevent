@@ -9,9 +9,9 @@
     <name>YES Event</name>   
     <dependencies>
         <dependency>
-            <groupId>com.google.code.guice</groupId>
-            <artifactId>guice</artifactId>
-            <version>1.0</version>
+            <groupId>com.google.collections</groupId>
+            <artifactId>google-collections</artifactId>
+            <version>0.9</version>
         </dependency>
         <dependency>
             <groupId>org.jmock</groupId>
@@ -32,9 +32,10 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.google.collections</groupId>
-            <artifactId>google-collections</artifactId>
-            <version>0.9</version>
+            <groupId>com.google.code.guice</groupId>
+            <artifactId>guice</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     <build>
