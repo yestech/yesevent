@@ -17,5 +17,4 @@ public interface IEventMulticaster<EVENT extends IEvent, RESULT extends Serializ
 {
     void process(EVENT event, RESULT result);
 
-    void init(List<IListener> listeners);
 }

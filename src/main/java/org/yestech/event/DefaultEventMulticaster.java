@@ -14,13 +14,17 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT extends Serial
 {
 
     private final Multimap<Class, IListener> listenerMap = new ArrayListMultimap<Class, IListener>();
+    private List<IListener> listeners;
 
+    public void setListeners(List<IListener> listeners)
+    {
+        this.listeners = listeners;
+    }
 
-    public void init(List<IListener> listeners) {
+    public void init() {
 
         for (IListener listener : listeners)
         {
-
             ListenedEvents listenedEvents = listener.getClass().getAnnotation(ListenedEvents.class);
             if (listenedEvents != null) {
                 for (Class<? extends IEvent> eventClass : listenedEvents.value())

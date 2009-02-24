@@ -9,6 +9,7 @@ package org.yestech.event.guice;
 import com.google.inject.Binder;
 import org.yestech.event.IEventMulticaster;
 import org.yestech.event.IListener;
+import org.yestech.event.DefaultEventMulticaster;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +20,10 @@ import java.util.List;
  */
 public class MulticasterBinder
 {
-    private IEventMulticaster multicasterClass;
+    private DefaultEventMulticaster multicasterClass;
     private List<IListener> list = new ArrayList<IListener>();
 
-    public MulticasterBinder(IEventMulticaster multicasterClass) {
+    public MulticasterBinder(DefaultEventMulticaster multicasterClass) {
 
         this.multicasterClass = multicasterClass;
     }
@@ -39,6 +40,7 @@ public class MulticasterBinder
             binder.bind((Class) listener.getClass()).toInstance(listener);
         }
         binder.bind(IEventMulticaster.class).toInstance(multicasterClass);
-        multicasterClass.init(list);
+        multicasterClass.setListeners(list);
+        multicasterClass.init();
     }
 }
