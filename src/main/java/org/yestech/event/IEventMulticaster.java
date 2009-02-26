@@ -15,6 +15,6 @@ import java.util.List;
  */
 public interface IEventMulticaster<EVENT extends IEvent, RESULT extends Serializable>
 {
-    void process(EVENT event, RESULT result);
+    RESULT process(EVENT event);
 
 }

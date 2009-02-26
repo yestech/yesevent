@@ -88,7 +88,7 @@ public class DefaultEventMulticasterTest
         }
 
         @Override
-        public void handle(IEvent iEvent, Serializable serializable)
+        public void handle(IEvent iEvent, ResultReference ref)
         {
 
         }
@@ -98,7 +98,7 @@ public class DefaultEventMulticasterTest
     public class Listener2 implements IListener
     {
         @Override
-        public void handle(IEvent iEvent, Serializable serializable)
+        public void handle(IEvent iEvent, ResultReference ref)
         {
 
         }
@@ -108,7 +108,7 @@ public class DefaultEventMulticasterTest
     public class Listener3 implements IListener
     {
         @Override
-        public void handle(IEvent iEvent, Serializable serializable)
+        public void handle(IEvent event, ResultReference ref)
         {
 
         }

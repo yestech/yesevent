@@ -11,6 +11,6 @@ import java.io.Serializable;
 public interface IListener<EVENT extends IEvent, RESULT extends Serializable>
 {
 
-    void handle(EVENT event, RESULT result);
+    void handle(EVENT event, ResultReference<RESULT> result);
 
 }
