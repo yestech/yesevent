@@ -60,14 +60,14 @@
     </repositories>   
     <distributionManagement>
         <repository>
-            <id>blackbox.release</id>
-            <name>Blackbox release repository</name>
-            <url>http://repo.yestech.org/content/repositories/blackbox-release</url>
+            <id>yestech.release</id>
+            <name>Yestech release repository</name>
+            <url>http://repo.yestech.org/content/repositories/releases</url>
         </repository>
         <snapshotRepository>
-            <id>blackbox.snapshots</id>
-            <name>Blackbox snapshots repository</name>
-            <url>http://repo.yestech.org/content/repositories/blackbox-snapshots</url>
+            <id>yestech.snapshots</id>
+            <name>Yestech snapshots repository</name>
+            <url>http://repo.yestech.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 </project>
