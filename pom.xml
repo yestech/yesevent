@@ -6,7 +6,7 @@
     <artifactId>yesevent</artifactId>
     <packaging>jar</packaging>
     <version>1.0.0-SNAPSHOT</version>
-    <name>YES Event</name>   
+    <name>YES Event</name>
     <dependencies>
         <dependency>
             <groupId>com.google.collections</groupId>
@@ -52,12 +52,45 @@
             </plugins>
         </pluginManagement>
     </build>
-    <repositories>          
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    <repositories>
         <repository>
             <id>yestech.thirdparty</id>
             <url>http://repo.yestech.org/content/repositories/thirdparty</url>
         </repository>
-    </repositories>   
+    </repositories>
     <distributionManagement>
         <repository>
             <id>yestech.release</id>
