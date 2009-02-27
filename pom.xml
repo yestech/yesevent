@@ -54,7 +54,7 @@
     </build>
     <repositories>          
         <repository>
-            <id>yes.thirdparty</id>
+            <id>yestech.thirdparty</id>
             <url>http://repo.yestech.org/content/repositories/thirdparty</url>
         </repository>
     </repositories>   
