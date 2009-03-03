@@ -1,8 +1,9 @@
-/*Copyright(c) 2004-2008, iovation, inc. All rights reserved.
+/*
+ * Copyright LGPL3
+ * YES Technology Association
+ * http://yestech.org
  *
- * Original Author:  ${user}
- * Original Date:    ${date}
- * Last Modified Date: $$DateTime$$
+ * http://www.opensource.org/licenses/lgpl-3.0.html
  */
 package org.yestech.event;
 
