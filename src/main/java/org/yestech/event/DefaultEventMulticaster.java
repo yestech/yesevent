@@ -30,6 +30,7 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT extends Serial
     private int maximumPoolSize = 10;
     private long keepAliveTime = 60;
     private List<IListener> listeners;
+    private List<List<IListener>> listenerGroups;
 
     public ExecutorService getPool() {
         return pool;
@@ -72,8 +73,29 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT extends Serial
         this.listeners = listeners;
     }
 
+    public List<List<IListener>> getListenerGroups() {
+        return listenerGroups;
+    }
+
+    /**
+     * Sets a list of {@link IListener}s that allows for easier grouping of listeners
+     * and set there execution order.
+     *
+     * @param listenerGroups
+     */
+    public void setListenerGroups(List<List<IListener>> listenerGroups) {
+        this.listenerGroups = listenerGroups;
+    }
+
     public void init() {
-        addListeners();
+        addListeners(listeners);
+
+        if (listenerGroups != null) {
+            for (List<IListener> listenerGroup : listenerGroups) {
+                addListeners(listenerGroup);
+            }
+        }
+        
         initializeThreadPool();
     }
 
@@ -85,7 +107,7 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT extends Serial
         }
     }
 
-    private void addListeners() {
+    private void addListeners(List<IListener> listeners) {
         if (listeners != null) {
             for (IListener listener : listeners) {
                 ListenedEvents listenedEvents = listener.getClass().getAnnotation(ListenedEvents.class);
