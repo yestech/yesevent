@@ -63,26 +63,39 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT extends Serial
         this.keepAliveTime = keepAliveTime;
     }
 
+    /**
+     * Sets a list of {@link IListener}s
+     *
+     * @param listeners
+     */
     public void setListeners(List<IListener> listeners) {
         this.listeners = listeners;
     }
 
     public void init() {
+        addListeners();
+        initializeThreadPool();
+    }
 
-        for (IListener listener : listeners) {
-            ListenedEvents listenedEvents = listener.getClass().getAnnotation(ListenedEvents.class);
-            if (listenedEvents != null) {
-                for (Class<? extends IEvent> eventClass : listenedEvents.value()) {
-                    listenerMap.put(eventClass, listener);
-                }
-            }
-        }
-        
+    private void initializeThreadPool() {
         if (pool == null) {
             pool = new ThreadPoolExecutor(corePoolSize, maximumPoolSize,
                     keepAliveTime, TimeUnit.SECONDS,
                     new LinkedBlockingDeque<Runnable>());
-        }        
+        }
+    }
+
+    private void addListeners() {
+        if (listeners != null) {
+            for (IListener listener : listeners) {
+                ListenedEvents listenedEvents = listener.getClass().getAnnotation(ListenedEvents.class);
+                if (listenedEvents != null) {
+                    for (Class<? extends IEvent> eventClass : listenedEvents.value()) {
+                        listenerMap.put(eventClass, listener);
+                    }
+                }
+            }
+        }
     }
 
     Multimap<Class, IListener> getListenerMap() {
