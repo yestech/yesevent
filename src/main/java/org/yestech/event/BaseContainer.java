@@ -13,17 +13,12 @@
  */
 package org.yestech.event;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
-import org.yestech.event.IEventMulticaster;
-import org.yestech.event.IEvent;
-
 import javax.annotation.Resource;
 import java.io.Serializable;
 
 /**
  * Represents a base class for a service that wishes to integrate a {@link org.yestech.event.IEventMulticaster}.
- * By default it is configured to be {@link Autowired} by Spring.
+ * By default it is configured to be {@link Resource} named "eventMulticaster" by Spring.
  *
  * @author $Author: $
  * @version $Revision: $
@@ -39,8 +34,7 @@ public abstract class BaseContainer {
         return eventMulticaster;
     }
 
-    @Required
-    @Resource(name="eventMulticaster")    
+    @Resource(name = "eventMulticaster")
     public void setEventMulticaster(IEventMulticaster<IEvent, Serializable> eventMulticaster) {
         this.eventMulticaster = eventMulticaster;
     }
