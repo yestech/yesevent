@@ -11,6 +11,7 @@ package org.yestech.event;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
+import javax.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -19,9 +20,12 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.stereotype.Service;
+
 /**
  * @author A.J. Wright
  */
+@Service("eventMulticaster")
 public class DefaultEventMulticaster<EVENT extends IEvent, RESULT extends Serializable> implements IEventMulticaster<EVENT, RESULT> {
 
     private final Multimap<Class, IListener> listenerMap = new ArrayListMultimap<Class, IListener>();
@@ -87,6 +91,7 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT extends Serial
         this.listenerGroups = listenerGroups;
     }
 
+    @PostConstruct
     public void init() {
         addListeners(listeners);
 
