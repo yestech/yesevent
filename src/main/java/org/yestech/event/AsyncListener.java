@@ -13,7 +13,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
+ * Add this to an instance of {@link org.yestech.event.IListener} to note that the event should
+ * be executed asynchronously.
  *
  */
 @Retention(RetentionPolicy.RUNTIME)

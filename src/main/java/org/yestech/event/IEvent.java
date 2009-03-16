@@ -9,7 +9,11 @@
 package org.yestech.event;
 
 /**
- * @author A.J. Wright 
+ * Interface all events should implement.
+ * 
+ * @author A.J. Wright
+ * @see org.yestech.event.EventResultType
+ * @see org.yestech.event.IListener
  */
 public interface IEvent
 {

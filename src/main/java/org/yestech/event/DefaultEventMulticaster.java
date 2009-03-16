@@ -21,12 +21,19 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * @author A.J. Wright
+ * The default event multicaster implementation
+ *
+ * @param <EVENT> An implementation of IEvent, The event type the multicaster will handle.
+ * @param <RESULT> A serializable result that result type can handle.
  */
 @Service("eventMulticaster")
 public class DefaultEventMulticaster<EVENT extends IEvent, RESULT extends Serializable> implements IEventMulticaster<EVENT, RESULT> {
+
+    private static final Logger log = LoggerFactory.getLogger(DefaultEventMulticaster.class);
 
     private final Multimap<Class, IListener> listenerMap = new ArrayListMultimap<Class, IListener>();
     private ExecutorService pool;
@@ -116,10 +123,21 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT extends Serial
         if (listeners != null) {
             for (IListener listener : listeners) {
                 ListenedEvents listenedEvents = listener.getClass().getAnnotation(ListenedEvents.class);
+
                 if (listenedEvents != null) {
                     for (Class<? extends IEvent> eventClass : listenedEvents.value()) {
+                        
+                        if (log.isDebugEnabled()) {
+                            log.debug(String.format("Listener %s Registered against Event %s",
+                                    listener.getClass().getSimpleName(), eventClass.getSimpleName()));
+                        }
                         listenerMap.put(eventClass, listener);
                     }
+                }
+                else {
+                    String msg = "Listener must countain an IListenedEvents annotation";
+                    log.error(msg);
+                    throw new InvalidListenerException(msg);
                 }
             }
         }
@@ -144,11 +162,27 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT extends Serial
                 }
             }
         }
-        return ref.getResult();
+        Object result = ref.getResult();
+
+        if (result != null && event.getClass().isAnnotationPresent(EventResultType.class)) {
+            EventResultType resultType = event.getClass().getAnnotation(EventResultType.class);
+
+            if (resultType.value() != null) {
+                if (!resultType.value().isAssignableFrom(result.getClass())) {
+                    String msg = "Multicaster attempted to return a different result then the event required";
+                    log.error(msg);
+                    throw new InvalidResultException(msg);
+                }
+            }
+        }
+
+
+        return (RESULT) result;
     }
 
     private void processAsync(final EVENT event, final ResultReference<RESULT> ref, final IListener listener) {
         pool.execute(new Runnable() {
+            @SuppressWarnings({"unchecked"})
             public void run() {
                 listener.handle(event, ref);
             }

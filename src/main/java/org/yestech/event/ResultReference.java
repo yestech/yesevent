@@ -38,6 +38,7 @@ public class ResultReference<T> implements Serializable
 
         ResultReference that = (ResultReference) o;
 
+        //noinspection RedundantIfStatement
         if (result != null ? !result.equals(that.result) : that.result != null) return false;
 
         return true;
