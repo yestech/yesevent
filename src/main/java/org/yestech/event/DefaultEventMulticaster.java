@@ -135,7 +135,8 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT extends Serial
                     }
                 }
                 else {
-                    String msg = "Listener must countain an IListenedEvents annotation";
+                    String msg = String.format("%s must contain an IListenedEvents annotation",
+                            listener.getClass().getSimpleName());
                     log.error(msg);
                     throw new InvalidListenerException(msg);
                 }
@@ -169,7 +170,9 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT extends Serial
 
             if (resultType.value() != null) {
                 if (!resultType.value().isAssignableFrom(result.getClass())) {
-                    String msg = "Multicaster attempted to return a different result then the event required";
+                    String msg = String.format("%s Requires that a type of %s was returned",
+                            event.getClass().getSimpleName(),
+                            resultType.getClass().getSimpleName());
                     log.error(msg);
                     throw new InvalidResultException(msg);
                 }
