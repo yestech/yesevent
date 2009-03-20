@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * @param <RESULT> A serializable result that result type can handle.
  */
 @Service("eventMulticaster")
-public class DefaultEventMulticaster<EVENT extends IEvent, RESULT extends Serializable> implements IEventMulticaster<EVENT, RESULT> {
+public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> implements IEventMulticaster<EVENT, RESULT> {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultEventMulticaster.class);
 

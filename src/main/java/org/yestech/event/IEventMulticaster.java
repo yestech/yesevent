@@ -18,7 +18,7 @@ import java.util.List;
  * @see org.yestech.event.IEvent
  * @see org.yestech.event.IListener
  */
-public interface IEventMulticaster<EVENT extends IEvent, RESULT extends Serializable>
+public interface IEventMulticaster<EVENT extends IEvent, RESULT>
 {
 
     /**
