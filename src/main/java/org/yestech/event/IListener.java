@@ -8,15 +8,13 @@
 
 package org.yestech.event;
 
-import java.io.Serializable;
-
 /**
  *
  * @author A.J. Wright
  * @param <EVENT> An instance of IEvent
- * @param <RESULT> An instance of Serializable
+ * @param <RESULT> The result object
  */
-public interface IListener<EVENT extends IEvent, RESULT extends Serializable>
+public interface IListener<EVENT extends IEvent, RESULT>
 {
 
     void handle(EVENT event, ResultReference<RESULT> result);
