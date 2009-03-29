@@ -24,18 +24,18 @@ import java.io.Serializable;
  * @version $Revision: $
  */
 public abstract class BaseContainer {
-    private IEventMulticaster<IEvent, Serializable> eventMulticaster;
+    private IEventMulticaster<IEvent, Object> eventMulticaster;
 
     protected BaseContainer() {
         super();
     }
 
-    public IEventMulticaster<IEvent, Serializable> getEventMulticaster() {
+    public IEventMulticaster<IEvent, Object> getEventMulticaster() {
         return eventMulticaster;
     }
 
     @Resource(name = "eventMulticaster")
-    public void setEventMulticaster(IEventMulticaster<IEvent, Serializable> eventMulticaster) {
+    public void setEventMulticaster(IEventMulticaster<IEvent, Object> eventMulticaster) {
         this.eventMulticaster = eventMulticaster;
     }
 }
