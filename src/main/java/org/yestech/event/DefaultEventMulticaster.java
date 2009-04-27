@@ -12,6 +12,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -111,6 +112,11 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> implements IE
         initializeThreadPool();
     }
 
+    @PreDestroy
+    public void destroy() {
+        pool.shutdown();
+    }
+    
     private void initializeThreadPool() {
         if (pool == null) {
             pool = new ThreadPoolExecutor(corePoolSize, maximumPoolSize,
