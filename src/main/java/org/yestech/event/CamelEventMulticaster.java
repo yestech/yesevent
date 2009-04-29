@@ -25,6 +25,7 @@ import javax.annotation.Resource;
  * @param <RESULT> A serializable result that result type can handle.
  */
 @Service("camelEventMulticaster")
+@SuppressWarnings({"unchecked"})
 public class CamelEventMulticaster<EVENT extends ICamelEvent, RESULT> implements IEventMulticaster<EVENT, RESULT> {
 
     private static final Logger logger = LoggerFactory.getLogger(CamelEventMulticaster.class);
@@ -54,7 +55,6 @@ public class CamelEventMulticaster<EVENT extends ICamelEvent, RESULT> implements
     }
 
 
-    @SuppressWarnings({"unchecked"})
     public RESULT process(final EVENT event) {
         ResultReference<RESULT> ref = new ResultReference<RESULT>();
 
