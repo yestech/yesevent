@@ -24,7 +24,7 @@ import javax.annotation.Resource;
  * @param <EVENT> An implementation of ICamelEvent, The event type the multicaster will handle.
  * @param <RESULT> A serializable result that result type can handle.
  */
-//@Service("camelEventMulticaster")
+@Service("camelEventMulticaster")
 @SuppressWarnings({"unchecked"})
 public class CamelEventMulticaster<EVENT extends ICamelEvent, RESULT> implements IEventMulticaster<EVENT, RESULT> {
 
