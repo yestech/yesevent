@@ -24,7 +24,7 @@ import javax.annotation.Resource;
  * @param <EVENT> An implementation of ICamelEvent, The event type the multicaster will handle.
  * @param <RESULT> A serializable result that result type can handle.
  */
-@Service("camelEventMulticaster")
+//@Service("camelEventMulticaster")
 @SuppressWarnings({"unchecked"})
 public class CamelEventMulticaster<EVENT extends ICamelEvent, RESULT> implements IEventMulticaster<EVENT, RESULT> {
 
@@ -36,7 +36,7 @@ public class CamelEventMulticaster<EVENT extends ICamelEvent, RESULT> implements
         return template;
     }
 
-    @Resource(name = "camelTemplate")
+//    @Resource(name = "camelTemplate")
     public void setTemplate(ProducerTemplate template) {
         this.template = template;
     }
@@ -45,7 +45,7 @@ public class CamelEventMulticaster<EVENT extends ICamelEvent, RESULT> implements
         return context;
     }
 
-    @Resource(name = "camelContext")
+//    @Resource(name = "camelContext")
     public void setContext(CamelContext context) {
         this.context = context;
     }
