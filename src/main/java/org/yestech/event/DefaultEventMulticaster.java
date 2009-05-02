@@ -36,7 +36,8 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> implements IE
 
     private static final Logger log = LoggerFactory.getLogger(DefaultEventMulticaster.class);
 
-    private final Multimap<Class, IListener> listenerMap = new ArrayListMultimap<Class, IListener>();
+    private final Multimap<Class, IListener> listenerMap = ArrayListMultimap.create();
+    
     private ExecutorService pool;
     private int corePoolSize = 1;
     private int maximumPoolSize = 10;
