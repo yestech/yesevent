@@ -21,6 +21,8 @@ import org.yestech.event.guice.MulticasterBinder;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * @author A.J. Wright
@@ -75,7 +77,8 @@ public class DefaultEventMulticasterTest
         multicastor.setListeners(listeners);
         multicastor.init();
         multicastor.process(new Event1());
-        Thread.currentThread().sleep(100);
+
+        Thread.currentThread().sleep(1000);
         assertTrue(asyncListener.isCalled());
     }
 

@@ -117,7 +117,7 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> implements IE
     public void destroy() {
         pool.shutdown();
     }
-    
+
     private void initializeThreadPool() {
         if (pool == null) {
             pool = new ThreadPoolExecutor(corePoolSize, maximumPoolSize,
