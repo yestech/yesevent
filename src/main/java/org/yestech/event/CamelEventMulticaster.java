@@ -11,6 +11,7 @@ package org.yestech.event;
 import org.apache.camel.Message;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.CamelContext;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -56,12 +57,13 @@ public class CamelEventMulticaster<EVENT extends ICamelEvent, RESULT> implements
 
 
     public RESULT process(final EVENT event) {
-        ResultReference<RESULT> ref = new ResultReference<RESULT>();
-
-        template.send(event.getDefaultEndPointUri(), event);
-        loadResult(event, ref);
-        Object result = ref.getResult();
-
+        Object result = null;
+        if (StringUtils.isNotBlank(event.getDefaultEndPointUri())) {
+            result = template.sendBody(event.getDefaultEndPointUri(), event);
+        }
+        else {
+            result = template.sendBody(event);
+        }
         if (result != null && event.getClass().isAnnotationPresent(EventResultType.class)) {
             EventResultType resultType = event.getClass().getAnnotation(EventResultType.class);
 
@@ -78,16 +80,4 @@ public class CamelEventMulticaster<EVENT extends ICamelEvent, RESULT> implements
 
         return (RESULT) result;
     }
-
-    private void loadResult(EVENT event, ResultReference<RESULT> ref) {
-        Message message = event.getOut();
-        if (message == null || message.getBody() == null) {
-            message = event.getIn();
-            if (message != null) {
-                RESULT result = (RESULT) message.getBody();
-                ref.setResult(result);
-            }
-        }
-    }
-
 }

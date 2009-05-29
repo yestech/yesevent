@@ -17,7 +17,7 @@ import org.apache.camel.Exchange;
  * @see EventResultType
  * @see IListener
  */
-public interface ICamelEvent extends IEvent, Exchange
+public interface ICamelEvent extends IEvent
 {
     String getDefaultEndPointUri();
 
