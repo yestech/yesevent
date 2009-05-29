@@ -30,17 +30,7 @@ import javax.annotation.Resource;
 public class CamelEventMulticaster<EVENT extends ICamelEvent, RESULT> implements IEventMulticaster<EVENT, RESULT> {
 
     private static final Logger logger = LoggerFactory.getLogger(CamelEventMulticaster.class);
-    private ProducerTemplate template;
     private CamelContext context;
-
-    public ProducerTemplate getTemplate() {
-        return template;
-    }
-
-//    @Resource(name = "camelTemplate")
-    public void setTemplate(ProducerTemplate template) {
-        this.template = template;
-    }
 
     public CamelContext getContext() {
         return context;
@@ -57,11 +47,11 @@ public class CamelEventMulticaster<EVENT extends ICamelEvent, RESULT> implements
 
 
     public RESULT process(final EVENT event) {
+        final ProducerTemplate template = context.createProducerTemplate();
         Object result = null;
         if (StringUtils.isNotBlank(event.getDefaultEndPointUri())) {
             result = template.sendBody(event.getDefaultEndPointUri(), event);
-        }
-        else {
+        } else {
             result = template.sendBody(event);
         }
         if (result != null && event.getClass().isAnnotationPresent(EventResultType.class)) {

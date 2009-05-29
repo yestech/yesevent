@@ -53,7 +53,6 @@ public class CamelEventMulticasterUnitTest {
         camelContext.start();
         template = camelContext.createProducerTemplate();
         template.start();
-        multicaster.setTemplate(template);
         multicaster.setContext(camelContext);
     }
 
