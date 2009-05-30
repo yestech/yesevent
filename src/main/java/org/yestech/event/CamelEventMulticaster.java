@@ -15,9 +15,11 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Required;
 
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
+import javax.annotation.PostConstruct;
 
 /**
  * A <a href="http://camel.apache.org">camel</a> based event multicaster implementation
@@ -36,7 +38,7 @@ public class CamelEventMulticaster<EVENT extends ICamelEvent, RESULT> implements
         return context;
     }
 
-//    @Resource(name = "camelContext")
+    @Required
     public void setContext(CamelContext context) {
         this.context = context;
     }
@@ -45,7 +47,10 @@ public class CamelEventMulticaster<EVENT extends ICamelEvent, RESULT> implements
     public void destroy() {
     }
 
-
+    @PostConstruct
+    public void init() {
+    }
+    
     public RESULT process(final EVENT event) {
         final ProducerTemplate template = context.createProducerTemplate();
         Object result = null;
