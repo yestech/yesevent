@@ -18,7 +18,7 @@ package org.yestech.event;
  * @version $Revision: $
  */
 public abstract class BaseCamelEvent<TYPE> extends BaseEvent<TYPE> implements ICamelEvent {
-    private String defaultEndPointUrl;
+    private String defaultEndPointUri;
 
     protected BaseCamelEvent() {
     }
@@ -27,11 +27,13 @@ public abstract class BaseCamelEvent<TYPE> extends BaseEvent<TYPE> implements IC
         super(type);
     }
 
-    public String getDefaultEndPointUrl() {
-        return defaultEndPointUrl;
+    @Override
+    public String getDefaultEndPointUri() {
+        return defaultEndPointUri;
     }
 
-    public void setDefaultEndPointUrl(String defaultEndPointUrl) {
-        this.defaultEndPointUrl = defaultEndPointUrl;
+    @Override
+    public void setDefaultEndPointUri(String uri) {
+        this.defaultEndPointUri = uri;
     }
 }
