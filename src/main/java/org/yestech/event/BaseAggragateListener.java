@@ -18,13 +18,13 @@ import org.springframework.beans.factory.annotation.Required;
 import java.util.List;
 
 /**
- * A simple lister that executes a sequence of listeners.
+ * A base class for a simple lister that executes a sequence of listeners.
  *
  * @author Artie Copeland
  * @version $Revision: $
  */
 @SuppressWarnings("unchecked")
-public abstract class AggragateListener<EVENT extends IEvent, RESULT> implements IListener {
+public abstract class BaseAggragateListener<EVENT extends IEvent, RESULT> implements IListener {
     private List<IListener> listeners;
 
     public List getListeners() {
