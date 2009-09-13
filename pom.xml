@@ -1,11 +1,3 @@
-<!--
-  ~ Copyright LGPL3
-  ~ YES Technology Association
-  ~ http://yestech.org
-  ~
-  ~ http://www.opensource.org/licenses/lgpl-3.0.html
-  -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -15,10 +7,11 @@
     <packaging>jar</packaging>
     <version>1.1.0-SNAPSHOT</version>
     <name>YES Event</name>
-    <url>http://yestech.org</url>
+    <url>http://yestech.org/sites/yesevent/</url>
     <scm>
-        <connection>scm:git:http://github.com/yestech/yesevent/tree/master</connection>
-        <developerConnection>scm:git:http://github.com/yestech/yesevent/tree/master</developerConnection>
+        <connection>scm:git:git://github.com/yestech/yesevent.git</connection>
+        <developerConnection>scm:git:git://github.com/yestech/yesevent.git</developerConnection>
+        <url>http://github.com/yestech/yesevent/tree/master</url>
     </scm>
     <organization>
         <name>YES Technology Association</name>
@@ -35,7 +28,7 @@
         <developer>
             <id>artie</id>
             <name>Artie Copeland</name>
-            <email>artie@yestech.org</email>
+            <email>http://mailhide.recaptcha.net/d?k=013dif-8KmF_OR5-Zs49rn9w==&amp;c=ZDwNN9ZwWomHpMAaLEW0Rt3HB4aATO6AM20eeZNxLS4=</email>
             <roles>
                 <role>architect</role>
                 <role>developer</role>
@@ -185,6 +178,25 @@
             </build>
         </profile>
     </profiles>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.6</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.4.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.1.2</version>
+            </plugin>
+        </plugins>
+    </reporting>
     <repositories>
         <repository>
             <id>yestech-snapshots</id>
@@ -212,6 +224,10 @@
         </pluginRepository>
     </pluginRepositories>
     <distributionManagement>
+        <site>
+            <id>yestech.org</id>
+            <url>file:////wwwhome/yestech.org/sites/${artifactId}</url>
+        </site>
         <repository>
             <id>yestech-releases</id>
             <name>YES Technology Release Repository</name>
