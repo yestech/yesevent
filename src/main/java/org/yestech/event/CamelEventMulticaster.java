@@ -8,6 +8,8 @@
 
 package org.yestech.event;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.camel.Message;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.CamelContext;
@@ -20,6 +22,12 @@ import org.springframework.beans.factory.annotation.Required;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.annotation.PostConstruct;
+import org.apache.camel.Endpoint;
+import org.apache.camel.Exchange;
+import org.apache.camel.component.direct.DirectEndpoint;
+import org.apache.camel.impl.DefaultEndpoint;
+import org.apache.camel.impl.DefaultMessage;
+import org.apache.camel.impl.DefaultProducerTemplate;
 
 /**
  * A <a href="http://camel.apache.org">camel</a> based event multicaster implementation
@@ -31,15 +39,23 @@ import javax.annotation.PostConstruct;
 public class CamelEventMulticaster<EVENT extends ICamelEvent, RESULT> implements IEventMulticaster<EVENT, RESULT> {
 
     private static final Logger logger = LoggerFactory.getLogger(CamelEventMulticaster.class);
-    private CamelContext context;
+    private Map<String, CamelContext> contexts = new HashMap<String, CamelContext>();
+    private CamelContext defaultContext;
 
-    public CamelContext getContext() {
-        return context;
+    public Map<String, CamelContext> getContexts() {
+        return contexts;
     }
 
-    @Required
-    public void setContext(CamelContext context) {
-        this.context = context;
+    public void setContexts(Map<String, CamelContext> contexts) {
+        this.contexts = contexts;
+    }
+
+    public CamelContext getDefaultContext() {
+        return defaultContext;
+    }
+
+    public void setDefaultContext(CamelContext defaultContext) {
+        this.defaultContext = defaultContext;
     }
 
     @PreDestroy
@@ -51,12 +67,30 @@ public class CamelEventMulticaster<EVENT extends ICamelEvent, RESULT> implements
     }
     
     public RESULT process(final EVENT event) {
-        final ProducerTemplate template = context.createProducerTemplate();
+        CamelContext context = defaultContext;
+        if (context == null) {
+            context = contexts.get(event.getEventName());
+        }
+        if (context == null) {
+            throw new RuntimeException("context not found....");
+        }
+        final DefaultProducerTemplate template = (DefaultProducerTemplate) context.createProducerTemplate();
         Object result = null;
         if (StringUtils.isNotBlank(event.getDefaultEndPointUri())) {
-            result = template.sendBody(event.getDefaultEndPointUri(), event);
+            Endpoint endpoint = context.getEndpoint(event.getDefaultEndPointUri());
+            template.setDefaultEndpoint(endpoint);
+            Exchange exchange = endpoint.createExchange();
+            Message message = new DefaultMessage();
+            message.setBody(event);
+            exchange.setIn(message);
+            exchange = template.send(exchange);
+            if (exchange.hasOut()) {
+                result = exchange.getOut().getBody();
+            } else {
+                result = exchange.getIn().getBody();
+            }
         } else {
-            result = template.sendBody(event);
+            throw new RuntimeException("need to set a defaultEndPointUri");
         }
         if (result != null && event.getClass().isAnnotationPresent(EventResultType.class)) {
             EventResultType resultType = event.getClass().getAnnotation(EventResultType.class);

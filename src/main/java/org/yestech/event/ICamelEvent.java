@@ -8,8 +8,6 @@
 
 package org.yestech.event;
 
-import org.apache.camel.Exchange;
-
 /**
  * Interface for all camel based events
  *
@@ -19,6 +17,8 @@ import org.apache.camel.Exchange;
  */
 public interface ICamelEvent extends IEvent
 {
+    String getEventName();
+
     String getDefaultEndPointUri();
 
     void setDefaultEndPointUri(String uri);

@@ -8,6 +8,8 @@
 
 package org.yestech.event;
 
+import java.io.Serializable;
+
 /**
  * Interface all events should implement.
  * 
@@ -15,6 +17,6 @@ package org.yestech.event;
  * @see org.yestech.event.EventResultType
  * @see org.yestech.event.IListener
  */
-public interface IEvent
+public interface IEvent extends Serializable
 {
 }
