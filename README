@@ -1,0 +1,2 @@
+Java Based Event framework that can be used with a Dependency Injection system or without.  Currently Spring and Guice are supported.
+The Framework is pluggable with implementation that support direct routing and integration of apache camel to handle the routing of events.

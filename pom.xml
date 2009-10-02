@@ -8,7 +8,9 @@
     <version>1.1.0-SNAPSHOT</version>
     <name>YES Event</name>
     <url>http://yestech.org/sites/yesevent/</url>
-    <description></description>
+    <description>Java Based Event framework that can be used with a Dependency Injection system or without.  Currently
+    Spring and Guice are supported.  The Framework is pluggable with implementation that support direct routing and integration
+    of apache camel to handle the routing of events.</description>
     <parent>
         <groupId>org.yestech</groupId>
         <artifactId>yessuperpom</artifactId>

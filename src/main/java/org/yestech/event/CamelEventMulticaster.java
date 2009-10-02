@@ -28,29 +28,27 @@ import org.apache.camel.impl.DefaultProducerTemplate;
  * <br/>
  * An example with Spring Config:
  * <pre>
- * <beans xmlns="http://www.springframework.org/schema/beans"
+ * &lt;beans xmlns="http://www.springframework.org/schema/beans"
  *       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  *       xmlns:camel="http://camel.apache.org/schema/spring"
  *       xsi:schemaLocation="
  *          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
- *          http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+ *          http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd"&gt;
  *
- *    <camel:camelContext id="context">
- *       <camel:jmxAgent id="contextAgent" disabled="true"/>
- *      <!-- will be default endpoint added to event fired -->
- *        <camel:endpoint uri="direct:processEvent" />
- *        <camel:route>
- *            <camel:from uri="direct:processEvent"/>
- *            <camel:to uri="bean:businessRuleListener?method=processEvent"/>
- *        </camel:route>
- *    </camel:camelContext>
+ *    &lt;camel:camelContext id="context"&gt;
+ *       &lt;camel:jmxAgent id="contextAgent" disabled="true"/&gt;
+ *      &lt;!-- will be default endpoint added to event fired --&gt;
+ *        &lt;camel:endpoint uri="direct:processEvent" /&gt;
+ *        &lt;camel:route&gt;
+ *            &lt;camel:from uri="direct:processEvent"/&gt;
+ *            &lt;camel:to uri="bean:someBean?method=processEvent"/&gt;
+ *        &lt;/camel:route&gt;
+ *    &lt;/camel:camelContext&gt;
  *
- *     <bean id="eventMulticastor" class="org.yestech.event.CamelEventMulticaster" p:defaultContext-ref="context"/>
+ *     &lt;bean id="eventMulticastor" class="org.yestech.event.CamelEventMulticaster" p:defaultContext-ref="context"/&gt;
  *
- * </beans>
+ * &lt;/beans&gt;
  * </pre>
- * <br/>
- * An example using guice: TBD
  *
  * @param <EVENT> An implementation of ICamelEvent, The event type the multicaster will handle.
  * @param <RESULT> A serializable result that result type can handle.
