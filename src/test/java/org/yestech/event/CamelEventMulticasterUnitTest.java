@@ -13,6 +13,7 @@
  */
 package org.yestech.event;
 
+import org.apache.camel.Exchange;
 import org.apache.camel.spi.Registry;
 import org.apache.camel.component.direct.DirectComponent;
 import org.apache.camel.component.bean.BeanComponent;
@@ -56,6 +57,37 @@ public class CamelEventMulticasterUnitTest {
     public void tearDown() throws Exception {
         template.stop();
         camelContext.stop();
+    }
+
+    @Test
+    public void testProcessDefaultContextWithExchangeResult() throws Exception {
+        CamelEventMulticaster<TestRawCamelEvent, Exchange> multicaster = new CamelEventMulticaster<TestRawCamelEvent, Exchange>();
+        multicaster.setDefaultContext(camelContext);
+        final String defaultEndPoint = "direct:test";
+        context.checking(new Expectations() {
+
+            {
+                oneOf(registry).lookup("direct");
+                will(returnValue(new DirectComponent()));
+                oneOf(registry).lookup("bean");
+                will(returnValue(new BeanComponent()));
+                oneOf(registry).lookup("finished");
+                will(returnValue(new TestBean()));
+                oneOf(registry).lookup("CamelBeanParameterMappingStrategy", ParameterMappingStrategy.class);
+                will(returnValue(new DefaultParameterMappingStrategy()));
+            }
+        });
+        camelContext.addRoutes(new RouteBuilder() {
+
+            public void configure() {
+                from(defaultEndPoint).to("bean:finished?method=talk");
+            }
+        });
+        TestRawCamelEvent event = new TestRawCamelEvent();
+        event.setDefaultEndPointUri(defaultEndPoint);
+        final Exchange result = multicaster.process(event);
+        assertNotNull(result);
+        assertEquals(TestBean.TALKING, result.getIn().getBody());
     }
 
     @Test
@@ -155,6 +187,16 @@ public class CamelEventMulticasterUnitTest {
         @Override
         public String getEventName() {
             return "testEvent";
+        }
+
+    }
+
+    @EventResultType(Exchange.class)
+    private static class TestRawCamelEvent extends BaseCamelEvent {
+
+        @Override
+        public String getEventName() {
+            return "testRawEvent";
         }
 
     }

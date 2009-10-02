@@ -115,6 +115,6 @@ public class CamelEventMulticaster<EVENT extends ICamelEvent, RESULT> extends Ba
 
     private boolean wantsExchange(EVENT event) {
         EventResultType resultType = EventUtils.getResultType(event);
-        return (resultType != null && resultType.getClass().isAssignableFrom(Exchange.class)) ? true : false;
+        return (resultType != null && resultType.value().isAssignableFrom(Exchange.class)) ? true : false;
     }
 }
