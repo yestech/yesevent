@@ -7,19 +7,28 @@
  */
 package org.yestech.event;
 
-import java.io.Serializable;
-import java.util.List;
-
 /**
  * Interface for the event multicaster
  *
- * @author $$Author$$
- * @version $$Revision$$
  * @see org.yestech.event.IEvent
  * @see org.yestech.event.IListener
  */
 public interface IEventMulticaster<EVENT extends IEvent, RESULT>
 {
+
+    /**
+     * Return is the result type should be checked.
+     *
+     * @return
+     */
+    public boolean isCheckResultType();
+
+    /**
+     * Sets whether the type of result is checked or not.
+     *
+     * @param resultTypeCheck
+     */
+    public void setCheckResultType(boolean checkResultType);
 
     /**
      * Called by the client to process an event.

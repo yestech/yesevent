@@ -11,12 +11,18 @@ package org.yestech.event;
 import java.io.Serializable;
 
 /**
- * Interface all events should implement.
+ * Interface all events should implement.  If the event wishes to
+ * be explicit on the type of result it requires use the {@link EventResultType} annotation.
  * 
- * @author A.J. Wright
  * @see org.yestech.event.EventResultType
  * @see org.yestech.event.IListener
  */
 public interface IEvent extends Serializable
 {
+    /**
+     * Returns a unique name for the event.
+     * 
+     * @return the name
+     */
+    String getEventName();
 }

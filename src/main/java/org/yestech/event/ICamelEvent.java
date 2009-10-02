@@ -9,17 +9,22 @@
 package org.yestech.event;
 
 /**
- * Interface for all camel based events
+ * Interface for all camel based events.  If the caller would like to get the
+ * Raw camel {@link Exchange} as the result the event must contain the {@link EventResultType}
+ * with a class of {@link Exchange}.
+
  *
- * @author A.J. Wright
  * @see EventResultType
- * @see IListener
  */
 public interface ICamelEvent extends IEvent
 {
-    String getEventName();
 
     String getDefaultEndPointUri();
 
+    /**
+     * Sets the entry point into the camel route.
+     *
+     * @param uri The URI for the camel route to set as default route.
+     */
     void setDefaultEndPointUri(String uri);
 }

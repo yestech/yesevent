@@ -21,8 +21,6 @@ import org.yestech.event.guice.MulticasterBinder;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * @author A.J. Wright
@@ -95,6 +93,7 @@ public class DefaultEventMulticasterTest
     {
 
         DefaultEventMulticaster multicaster = new DefaultEventMulticaster();
+        multicaster.setCheckResultType(true);
         ReturnsWrongListener listener = new ReturnsWrongListener();
         multicaster.setListeners(Lists.<IListener>newArrayList(listener));
         multicaster.init();
@@ -139,11 +138,11 @@ public class DefaultEventMulticasterTest
     {
     }
 
-    public static class Event1 implements IEvent
+    public static class Event1 extends BaseEvent
     {
     }
 
-    public static class Event2 implements IEvent
+    public static class Event2 extends BaseEvent
     {
     }
 
@@ -199,7 +198,7 @@ public class DefaultEventMulticasterTest
     }
 
     @EventResultType(Integer.class)
-    public class RequiredIntegerEvent implements IEvent {
+    public class RequiredIntegerEvent  extends BaseEvent {
 
     }
 

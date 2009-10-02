@@ -13,12 +13,15 @@
  */
 package org.yestech.event;
 
+import java.util.UUID;
+
 /**
  * @author Artie Copeland
  * @version $Revision: $
  */
 public abstract class BaseEvent<TYPE> implements IEvent {
     private TYPE type;
+    private String eventName = UUID.randomUUID().toString();
 
     protected BaseEvent() {
     }
@@ -30,6 +33,11 @@ public abstract class BaseEvent<TYPE> implements IEvent {
 
     public TYPE getType() {
         return type;
+    }
+
+    @Override
+    public String getEventName() {
+        return eventName;
     }
 
     @Override

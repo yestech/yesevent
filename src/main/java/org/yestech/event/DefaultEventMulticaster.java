@@ -13,7 +13,6 @@ import com.google.common.collect.Multimap;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -21,7 +20,6 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,9 +29,9 @@ import org.slf4j.LoggerFactory;
  * @param <EVENT> An implementation of IEvent, The event type the multicaster will handle.
  * @param <RESULT> A serializable result that result type can handle.
  */
-public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> implements IEventMulticaster<EVENT, RESULT> {
+public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> extends BaseEventMulticaster<EVENT, RESULT> {
 
-    private static final Logger log = LoggerFactory.getLogger(DefaultEventMulticaster.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultEventMulticaster.class);
 
     private final Multimap<Class, IListener> listenerMap = ArrayListMultimap.create();
     
@@ -100,6 +98,7 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> implements IE
     }
 
     @PostConstruct
+    @Override
     public void init() {
         addListeners(listeners);
 
@@ -113,6 +112,7 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> implements IE
     }
 
     @PreDestroy
+    @Override
     public void destroy() {
         pool.shutdown();
     }
@@ -133,8 +133,8 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> implements IE
                 if (listenedEvents != null) {
                     for (Class<? extends IEvent> eventClass : listenedEvents.value()) {
                         
-                        if (log.isDebugEnabled()) {
-                            log.debug(String.format("Listener %s Registered against Event %s",
+                        if (logger.isDebugEnabled()) {
+                            logger.debug(String.format("Listener %s Registered against Event %s",
                                     listener.getClass().getSimpleName(), eventClass.getSimpleName()));
                         }
                         listenerMap.put(eventClass, listener);
@@ -143,7 +143,7 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> implements IE
                 else {
                     String msg = String.format("%s must contain an IListenedEvents annotation",
                             listener.getClass().getSimpleName());
-                    log.error(msg);
+                    logger.error(msg);
                     throw new InvalidListenerException(msg);
                 }
             }
@@ -156,6 +156,7 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> implements IE
 
 
     @SuppressWarnings({"unchecked"})
+    @Override
     public RESULT process(final EVENT event) {
         Collection<IListener> list = listenerMap.get(event.getClass());
         ResultReference<RESULT> ref = new ResultReference<RESULT>();
@@ -171,20 +172,7 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> implements IE
         }
         Object result = ref.getResult();
 
-        if (result != null && event.getClass().isAnnotationPresent(EventResultType.class)) {
-            EventResultType resultType = event.getClass().getAnnotation(EventResultType.class);
-
-            if (resultType.value() != null) {
-                if (!resultType.value().isAssignableFrom(result.getClass())) {
-                    String msg = String.format("%s Requires that a type of %s was returned",
-                            event.getClass().getSimpleName(),
-                            resultType.getClass().getSimpleName());
-                    log.error(msg);
-                    throw new InvalidResultException(msg);
-                }
-            }
-        }
-
+        validate(event, result);
 
         return (RESULT) result;
     }
@@ -192,6 +180,7 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> implements IE
     private void processAsync(final EVENT event, final ResultReference<RESULT> ref, final IListener listener) {
         pool.execute(new Runnable() {
             @SuppressWarnings({"unchecked"})
+            @Override
             public void run() {
                 listener.handle(event, ref);
             }
