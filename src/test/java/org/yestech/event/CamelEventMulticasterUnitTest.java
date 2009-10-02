@@ -13,29 +13,21 @@
  */
 package org.yestech.event;
 
-import org.apache.camel.*;
 import org.apache.camel.spi.Registry;
 import org.apache.camel.component.direct.DirectComponent;
 import org.apache.camel.component.bean.BeanComponent;
 import org.apache.camel.component.bean.ParameterMappingStrategy;
 import org.apache.camel.component.bean.DefaultParameterMappingStrategy;
-import org.apache.camel.test.CamelTestSupport;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.bean.BeanEndpoint;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.apache.camel.impl.DefaultExchange;
-import org.apache.camel.impl.DefaultMessage;
 import org.apache.camel.impl.DefaultProducerTemplate;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
-import org.junit.runner.RunWith;
-import org.jmock.integration.junit4.JMock;
 import org.jmock.Mockery;
 import org.jmock.Expectations;
-import org.junit.Ignore;
 
 /**
  * @author Artie Copeland
