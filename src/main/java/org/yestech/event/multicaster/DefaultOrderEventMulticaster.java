@@ -12,6 +12,7 @@ import org.yestech.event.*;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,35 @@ import org.slf4j.LoggerFactory;
 public class DefaultOrderEventMulticaster<EVENT extends IEvent, RESULT> extends DefaultEventMulticaster<EVENT, RESULT> {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultOrderEventMulticaster.class);
+    private List<List<IListener>> listenerGroups;
+
+    public List<List<IListener>> getListenerGroups() {
+        return listenerGroups;
+    }
+
+    /**
+     * Sets a list of {@link IListener}s that allows for easier grouping of listeners
+     * and set there execution order.
+     *
+     * @param listenerGroups
+     */
+    public void setListenerGroups(List<List<IListener>> listenerGroups) {
+        this.listenerGroups = listenerGroups;
+    }
+
+    @PostConstruct
+    @Override
+    public void init() {
+        addListeners(getListeners());
+
+        if (listenerGroups != null) {
+            for (List<IListener> listenerGroup : listenerGroups) {
+                addListeners(listenerGroup);
+            }
+        }
+
+        initializeThreadPool();
+    }
 
     @Override
     protected void addListeners(List<IListener> listeners) {

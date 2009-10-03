@@ -46,7 +46,6 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> extends BaseE
     private int maximumPoolSize = 10;
     private long keepAliveTime = 60;
     private List<IListener> listeners;
-    private List<List<IListener>> listenerGroups;
 
     public ExecutorService getPool() {
         return pool;
@@ -89,31 +88,14 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> extends BaseE
         this.listeners = listeners;
     }
 
-    public List<List<IListener>> getListenerGroups() {
-        return listenerGroups;
+    public List<IListener> getListeners() {
+        return listeners;
     }
-
-    /**
-     * Sets a list of {@link IListener}s that allows for easier grouping of listeners
-     * and set there execution order.
-     *
-     * @param listenerGroups
-     */
-    public void setListenerGroups(List<List<IListener>> listenerGroups) {
-        this.listenerGroups = listenerGroups;
-    }
-
+  
     @PostConstruct
     @Override
     public void init() {
         addListeners(listeners);
-
-        if (listenerGroups != null) {
-            for (List<IListener> listenerGroup : listenerGroups) {
-                addListeners(listenerGroup);
-            }
-        }
-
         initializeThreadPool();
     }
 
@@ -123,7 +105,7 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> extends BaseE
         pool.shutdown();
     }
 
-    private void initializeThreadPool() {
+    protected void initializeThreadPool() {
         if (pool == null) {
             pool = new ThreadPoolExecutor(corePoolSize, maximumPoolSize,
                     keepAliveTime, TimeUnit.SECONDS,
