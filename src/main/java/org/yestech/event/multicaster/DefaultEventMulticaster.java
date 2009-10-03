@@ -6,15 +6,21 @@
  * http://www.opensource.org/licenses/lgpl-3.0.html
  */
 
-package org.yestech.event;
+package org.yestech.event.multicaster;
 
+import org.yestech.event.annotation.AsyncListener;
+import org.yestech.event.*;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -22,6 +28,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yestech.event.annotation.RegisterEvent;
+import org.yestech.event.annotation.RegisteredEvents;
 
 /**
  * The default event multicaster implementation
@@ -125,35 +133,48 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> extends BaseE
         }
     }
 
-    private void addListeners(List<IListener> listeners) {
+    protected void addListeners(List<IListener> listeners) {
+        Map<Class, List<ListenerContainer>> tempListenerMap = Maps.newHashMap();
         if (listeners != null) {
             for (IListener listener : listeners) {
-                ListenedEvents listenedEvents = listener.getClass().getAnnotation(ListenedEvents.class);
+                RegisteredEvents listenedEvents = listener.getClass().getAnnotation(RegisteredEvents.class);
 
                 if (listenedEvents != null) {
-                    for (Class<? extends IEvent> eventClass : listenedEvents.value()) {
-                        
-                        if (logger.isDebugEnabled()) {
-                            logger.debug(String.format("Listener %s Registered against Event %s",
-                                    listener.getClass().getSimpleName(), eventClass.getSimpleName()));
+                    for (RegisterEvent eventClass : listenedEvents.events()) {
+                        Class<? extends IEvent> event = eventClass.event();
+                        Integer order = eventClass.order();
+                        ListenerContainer container = new ListenerContainer();
+                        container.setListener(listener);
+                        container.setOrder(order);
+                        List<ListenerContainer> tempListenerList = tempListenerMap.get(event);
+                        if (tempListenerList == null) {
+                            tempListenerList = Lists.newArrayList();
+                            tempListenerMap.put(event, tempListenerList);
                         }
-                        listenerMap.put(eventClass, listener);
+                        tempListenerList.add(container);
                     }
                 }
                 else {
-                    String msg = String.format("%s must contain an IListenedEvents annotation",
+                    String msg = String.format("%s must contain an RegisteredEvents annotation",
                             listener.getClass().getSimpleName());
                     logger.error(msg);
                     throw new InvalidListenerException(msg);
                 }
             }
+            for (Map.Entry<Class, List<ListenerContainer>> tempEntry : tempListenerMap.entrySet()) {
+                Class<? extends IEvent> event = tempEntry.getKey();
+                List<ListenerContainer> tempListenersList = tempEntry.getValue();
+                Collections.sort(tempListenersList);
+                for (ListenerContainer listenerContainer : tempListenersList) {
+                    listenerMap.put(event, listenerContainer.getListener());
+                }
+            }
         }
     }
-
-    Multimap<Class, IListener> getListenerMap() {
+    
+    protected Multimap<Class, IListener> getListenerMap() {
         return listenerMap;
     }
-
 
     @SuppressWarnings({"unchecked"})
     @Override
@@ -187,5 +208,31 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> extends BaseE
         });
     }
 
+    private class ListenerContainer implements Comparable<ListenerContainer> {
+        private IListener listener;
+        private Integer order;
 
+        public IListener getListener() {
+            return listener;
+        }
+
+        public void setListener(IListener listener) {
+            this.listener = listener;
+        }
+
+        public Integer getOrder() {
+            return order;
+        }
+
+        public void setOrder(Integer order) {
+            this.order = order;
+        }
+
+        @Override
+        public int compareTo(ListenerContainer compare) {
+            return order.compareTo(compare.getOrder());
+        }
+
+
+    }
 }

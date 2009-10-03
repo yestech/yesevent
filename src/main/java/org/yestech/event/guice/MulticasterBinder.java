@@ -8,9 +8,9 @@
 package org.yestech.event.guice;
 
 import com.google.inject.Binder;
-import org.yestech.event.IEventMulticaster;
+import org.yestech.event.multicaster.IEventMulticaster;
 import org.yestech.event.IListener;
-import org.yestech.event.DefaultEventMulticaster;
+import org.yestech.event.multicaster.DefaultEventMulticaster;
 
 import java.util.ArrayList;
 import java.util.List;

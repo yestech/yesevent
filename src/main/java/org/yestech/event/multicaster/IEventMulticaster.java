@@ -5,7 +5,9 @@
  *
  * http://www.opensource.org/licenses/lgpl-3.0.html
  */
-package org.yestech.event;
+package org.yestech.event.multicaster;
+
+import org.yestech.event.*;
 
 /**
  * Interface for the event multicaster

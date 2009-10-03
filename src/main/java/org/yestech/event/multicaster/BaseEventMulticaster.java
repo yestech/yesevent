@@ -2,8 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.yestech.event;
+package org.yestech.event.multicaster;
 
+import org.yestech.event.annotation.EventResultType;
+import org.yestech.event.*;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import org.slf4j.Logger;

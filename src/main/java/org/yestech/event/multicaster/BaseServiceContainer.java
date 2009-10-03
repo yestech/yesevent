@@ -5,16 +5,10 @@
  *
  * http://www.opensource.org/licenses/lgpl-3.0.html
  */
+package org.yestech.event.multicaster;
 
-/*
- *
- * Original Author:  Artie Copeland
- * Last Modified Date: $DateTime: $
- */
-package org.yestech.event;
-
+import org.yestech.event.*;
 import javax.annotation.Resource;
-import java.io.Serializable;
 
 /**
  * Represents a base class for a service that wishes to integrate a {@link org.yestech.event.IEventMulticaster}.
@@ -23,10 +17,10 @@ import java.io.Serializable;
  * @author $Author: $
  * @version $Revision: $
  */
-public abstract class BaseContainer {
+public abstract class BaseServiceContainer {
     private IEventMulticaster<IEvent, Object> eventMulticaster;
 
-    protected BaseContainer() {
+    protected BaseServiceContainer() {
         super();
     }
 

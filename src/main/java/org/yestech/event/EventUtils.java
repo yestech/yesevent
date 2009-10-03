@@ -7,6 +7,8 @@
  */
 package org.yestech.event;
 
+import org.yestech.event.annotation.EventResultType;
+
 /**
  * Utility methods for Framework.
  *

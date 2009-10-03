@@ -13,6 +13,7 @@
  */
 package org.yestech.event;
 
+import org.yestech.event.annotation.AsyncListener;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.util.List;

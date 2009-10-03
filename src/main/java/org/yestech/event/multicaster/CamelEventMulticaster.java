@@ -5,8 +5,10 @@
  *
  * http://www.opensource.org/licenses/lgpl-3.0.html
  */
-package org.yestech.event;
+package org.yestech.event.multicaster;
 
+import org.yestech.event.annotation.EventResultType;
+import org.yestech.event.*;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.camel.Message;

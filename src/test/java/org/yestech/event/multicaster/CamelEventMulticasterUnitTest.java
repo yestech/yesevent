@@ -11,8 +11,11 @@
  * Author:  Artie Copeland
  * Last Modified Date: $DateTime: $
  */
-package org.yestech.event;
+package org.yestech.event.multicaster;
 
+import org.yestech.event.annotation.EventResultType;
+import org.yestech.event.*;
+import org.yestech.event.multicaster.CamelEventMulticaster;
 import org.apache.camel.Exchange;
 import org.apache.camel.spi.Registry;
 import org.apache.camel.component.direct.DirectComponent;

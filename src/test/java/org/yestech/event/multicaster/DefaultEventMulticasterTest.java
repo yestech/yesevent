@@ -6,8 +6,12 @@
  * http://www.opensource.org/licenses/lgpl-3.0.html
  */
 
-package org.yestech.event;
+package org.yestech.event.multicaster;
 
+import org.yestech.event.annotation.AsyncListener;
+import org.yestech.event.annotation.EventResultType;
+import org.yestech.event.annotation.ListenedEvents;
+import org.yestech.event.*;
 import static com.google.common.collect.Lists.newArrayList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Lists;
@@ -21,6 +25,8 @@ import org.yestech.event.guice.MulticasterBinder;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import org.yestech.event.annotation.RegisterEvent;
+import org.yestech.event.annotation.RegisteredEvents;
 
 /**
  * @author A.J. Wright
@@ -102,7 +108,9 @@ public class DefaultEventMulticasterTest
     }
 
 
-    @ListenedEvents(Event1.class)
+    @RegisteredEvents(events = {
+        @RegisterEvent(event = Event1.class, order = 1)
+    })
     @AsyncListener
     public static class TestAsyncListener implements IListener<Event1, TestResult>
     {
@@ -157,7 +165,9 @@ public class DefaultEventMulticasterTest
     }
 
 
-    @ListenedEvents(Event1.class)
+    @RegisteredEvents(events = {
+        @RegisterEvent(event = Event1.class)
+    })
     public class Listener1 implements IListener
     {
         private Foo foo;
@@ -179,7 +189,10 @@ public class DefaultEventMulticasterTest
         }
     }
 
-    @ListenedEvents({Event1.class, Event2.class})
+    @RegisteredEvents(events = {
+        @RegisterEvent(event = Event1.class),
+        @RegisterEvent(event = Event2.class)
+    })
     public class Listener2 implements IListener
     {
         public void handle(IEvent iEvent, ResultReference ref)
@@ -188,7 +201,9 @@ public class DefaultEventMulticasterTest
         }
     }
 
-    @ListenedEvents(Event2.class)
+    @RegisteredEvents(events = {
+        @RegisterEvent(event = Event2.class)
+    })
     public class Listener3 implements IListener
     {
         public void handle(IEvent event, ResultReference ref)
@@ -202,7 +217,9 @@ public class DefaultEventMulticasterTest
 
     }
 
-    @ListenedEvents(RequiredIntegerEvent.class)
+    @RegisteredEvents(events = {
+        @RegisterEvent(event = RequiredIntegerEvent.class)
+    })
     public class ReturnsWrongListener implements IListener
     {
 
