@@ -17,7 +17,6 @@ import java.lang.annotation.Target;
  * Must be added to every instance of {@link org.yestech.event.IListener}. This annotation tells what
  * events the listener must listen for.  Used with the {@link DefaultEventMulticaster}.
  *
- * @author A.J. Wright
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(java.lang.annotation.ElementType.TYPE)

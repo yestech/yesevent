@@ -5,12 +5,6 @@
  *
  * http://www.opensource.org/licenses/lgpl-3.0.html
  */
-
-/*
- *
- * Author:  Artie Copeland
- * Last Modified Date: $DateTime: $
- */
 package org.yestech.event;
 
 import org.yestech.event.annotation.AsyncListener;
@@ -19,10 +13,8 @@ import org.springframework.beans.factory.annotation.Required;
 import java.util.List;
 
 /**
- * A simple lister that executes a sequence of listeners in the background.
+ * A simple listener that executes a sequence of listeners in the background.
  *
- * @author Artie Copeland
- * @version $Revision: $
  */
 @SuppressWarnings("unchecked")
 @AsyncListener

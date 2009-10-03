@@ -18,7 +18,6 @@ import org.yestech.event.multicaster.DefaultOrderEventMulticaster;
  * Must be added to every instance of {@link org.yestech.event.IListener}. This annotation tells what
  * events the listener must listen for.  Used with the {@link DefaultOrderEventMulticaster}.
  *
- * @author A.J. Wright
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(java.lang.annotation.ElementType.TYPE)

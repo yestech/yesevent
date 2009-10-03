@@ -5,17 +5,10 @@
  *
  * http://www.opensource.org/licenses/lgpl-3.0.html
  */
-
-/*
- *
- * Author:  Artie Copeland
- * Last Modified Date: $DateTime: $
- */
 package org.yestech.event.multicaster;
 
 import org.yestech.event.annotation.EventResultType;
 import org.yestech.event.*;
-import org.yestech.event.multicaster.CamelEventMulticaster;
 import org.apache.camel.Exchange;
 import org.apache.camel.spi.Registry;
 import org.apache.camel.component.direct.DirectComponent;
@@ -32,12 +25,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import org.jmock.Mockery;
 import org.jmock.Expectations;
+import org.jmock.integration.junit4.JMock;
+import org.junit.runner.RunWith;
 
 /**
- * @author Artie Copeland
- * @version $Revision: $
+ * 
  */
-//@RunWith(JMock.class)
+@RunWith(JMock.class)
 public class CamelEventMulticasterUnitTest {
 
     private DefaultCamelContext camelContext;

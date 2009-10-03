@@ -5,19 +5,11 @@
  *
  * http://www.opensource.org/licenses/lgpl-3.0.html
  */
-
-/*
- *
- * Author:  Artie Copeland
- * Last Modified Date: $DateTime: $
- */
 package org.yestech.event;
 
 import java.util.UUID;
 
 /**
- * @author Artie Copeland
- * @version $Revision: $
  */
 public abstract class BaseEvent<TYPE> implements IEvent {
     private TYPE type;

@@ -16,7 +16,6 @@ import java.lang.annotation.Target;
 /**
  * Represents the Event to register with and the order of execution
  *
- * @author A.J. Wright
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(java.lang.annotation.ElementType.TYPE)

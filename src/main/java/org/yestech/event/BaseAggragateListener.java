@@ -5,12 +5,6 @@
  *
  * http://www.opensource.org/licenses/lgpl-3.0.html
  */
-
-/*
- *
- * Author:  Artie Copeland
- * Last Modified Date: $DateTime: $
- */
 package org.yestech.event;
 
 import org.springframework.beans.factory.annotation.Required;
@@ -20,8 +14,6 @@ import java.util.List;
 /**
  * A base class for a simple lister that executes a sequence of listeners.
  *
- * @author Artie Copeland
- * @version $Revision: $
  */
 @SuppressWarnings("unchecked")
 public abstract class BaseAggragateListener<EVENT extends IEvent, RESULT> implements IListener {

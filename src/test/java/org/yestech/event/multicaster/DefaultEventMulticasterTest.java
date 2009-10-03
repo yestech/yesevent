@@ -28,7 +28,7 @@ import org.yestech.event.annotation.RegisteredEvents;
 import org.yestech.event.multicaster.DefaultEventMulticaster.ListenerAdapter;
 
 /**
- * @author A.J. Wright
+ * 
  */
 public class DefaultEventMulticasterTest {
 

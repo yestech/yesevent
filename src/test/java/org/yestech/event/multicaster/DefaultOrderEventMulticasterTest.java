@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * @author A.J. Wright
+ *
  */
 public class DefaultOrderEventMulticasterTest
 {

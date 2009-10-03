@@ -16,8 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author $$Author$$
- * @version $$Revision$$
+ * 
  */
 public class MulticasterBinder
 {
