@@ -5,7 +5,6 @@
  *
  * http://www.opensource.org/licenses/lgpl-3.0.html
  */
-
 package org.yestech.event.multicaster;
 
 import org.yestech.event.annotation.AsyncListener;
@@ -31,20 +30,17 @@ import org.yestech.event.annotation.RegisteredEvents;
 /**
  * @author A.J. Wright
  */
-public class DefaultEventMulticasterTest
-{
+public class DefaultEventMulticasterTest {
 
     Mockery mockery = new JUnit4Mockery();
 
     @Test
-    public void testGuiceWiring()
-    {
+    public void testGuiceWiring() {
 
-        Module guiceModule = new AbstractModule()
-        {
+        Module guiceModule = new AbstractModule() {
+
             @Override
-            protected void configure()
-            {
+            protected void configure() {
                 bind(Foo.class).to(FooImpl.class);
 
                 MulticasterBinder mcBinder = new MulticasterBinder(new DefaultEventMulticaster());
@@ -72,8 +68,26 @@ public class DefaultEventMulticasterTest
     }
 
     @Test
-    public void testAsyncListener() throws InterruptedException
-    {
+    public void testOrderOfExecution() {
+        DefaultEventMulticaster multicastor = new DefaultEventMulticaster();
+        Listener2 listener2 = new Listener2();
+        Listener1 listener1 = new Listener1();
+        List<IListener> listeners = newArrayList();
+        listeners.add(listener2);
+        listeners.add(listener1);
+        multicastor.addListeners(listeners);
+        multicastor.init();
+        multicastor.getListenerMap();
+        Multimap<Class, IListener> listenerMap = multicastor.getListenerMap();
+        assertNotNull(listenerMap);
+        Collection<IListener> eventList = listenerMap.get(Event1.class);
+        assertEquals(2, eventList.size());
+        assertEquals(listener1, eventList.toArray()[0]);
+        assertEquals(listener2, eventList.toArray()[1]);
+    }
+
+    @Test
+    public void testAsyncListener() throws InterruptedException {
         DefaultEventMulticaster multicastor = new DefaultEventMulticaster();
         List<IListener> listeners = newArrayList();
         TestAsyncListener asyncListener = new TestAsyncListener();
@@ -87,16 +101,14 @@ public class DefaultEventMulticasterTest
     }
 
     @Test(expected = InvalidListenerException.class)
-    public void testFailOnInvalid()
-    {
+    public void testFailOnInvalid() {
         DefaultEventMulticaster multicaster = new DefaultEventMulticaster();
         multicaster.setListeners(Lists.<IListener>newArrayList(new InvalidListener()));
         multicaster.init();
     }
 
     @Test(expected = InvalidResultException.class)
-    public void testInvalidResult()
-    {
+    public void testInvalidResult() {
 
         DefaultEventMulticaster multicaster = new DefaultEventMulticaster();
         multicaster.setCheckResultType(true);
@@ -107,128 +119,109 @@ public class DefaultEventMulticasterTest
         multicaster.process(new RequiredIntegerEvent());
     }
 
-
     @RegisteredEvents(events = {
-        @RegisterEvent(event = Event1.class, order = 1)
+        @RegisterEvent(event = Event1.class)
     })
     @AsyncListener
-    public static class TestAsyncListener implements IListener<Event1, TestResult>
-    {
+    public static class TestAsyncListener implements IListener<Event1, TestResult> {
 
         private boolean called;
 
-        public boolean isCalled()
-        {
+        public boolean isCalled() {
             return called;
         }
 
-        public void setCalled(boolean called)
-        {
+        public void setCalled(boolean called) {
             this.called = called;
         }
 
-        public void handle(Event1 event1, ResultReference<TestResult> result)
-        {
+        public void handle(Event1 event1, ResultReference<TestResult> result) {
             called = true;
         }
     }
 
-    public static class TestResult implements Serializable
-    {
-
+    public static class TestResult implements Serializable {
     }
 
-    public interface Foo
-    {
+    public interface Foo {
     }
 
-    public static class FooImpl implements Foo
-    {
+    public static class FooImpl implements Foo {
     }
 
-    public static class Event1 extends BaseEvent
-    {
+    public static class Event1 extends BaseEvent {
     }
 
-    public static class Event2 extends BaseEvent
-    {
+    public static class Event2 extends BaseEvent {
     }
 
-
-    public class InvalidListener implements IListener
-    {
+    public class InvalidListener implements IListener {
 
         @Override
-        public void handle(IEvent iEvent, ResultReference result)
-        {
+        public void handle(IEvent iEvent, ResultReference result) {
         }
     }
 
-
     @RegisteredEvents(events = {
-        @RegisterEvent(event = Event1.class)
+        @RegisterEvent(event = Event1.class, order = 1)
     })
-    public class Listener1 implements IListener
-    {
+    public class Listener1 implements IListener {
+
         private Foo foo;
 
         @Inject
-        public void setFoo(Foo foo)
-        {
+        public void setFoo(Foo foo) {
             this.foo = foo;
         }
 
-        public Foo getFoo()
-        {
+        public Foo getFoo() {
             return foo;
         }
 
-        public void handle(IEvent iEvent, ResultReference ref)
-        {
+        public void handle(IEvent iEvent, ResultReference ref) {
+        }
 
+        @Override
+        public String toString() {
+            return "Listener1: " + super.toString();
         }
     }
 
     @RegisteredEvents(events = {
-        @RegisterEvent(event = Event1.class),
+        @RegisterEvent(event = Event1.class, order = 2),
         @RegisterEvent(event = Event2.class)
     })
-    public class Listener2 implements IListener
-    {
-        public void handle(IEvent iEvent, ResultReference ref)
-        {
+    public class Listener2 implements IListener {
 
+        public void handle(IEvent iEvent, ResultReference ref) {
+        }
+
+        @Override
+        public String toString() {
+            return "Listener2: " + super.toString();
         }
     }
 
     @RegisteredEvents(events = {
         @RegisterEvent(event = Event2.class)
     })
-    public class Listener3 implements IListener
-    {
-        public void handle(IEvent event, ResultReference ref)
-        {
+    public class Listener3 implements IListener {
 
+        public void handle(IEvent event, ResultReference ref) {
         }
     }
 
     @EventResultType(Integer.class)
-    public class RequiredIntegerEvent  extends BaseEvent {
-
+    public class RequiredIntegerEvent extends BaseEvent {
     }
 
     @RegisteredEvents(events = {
         @RegisterEvent(event = RequiredIntegerEvent.class)
     })
-    public class ReturnsWrongListener implements IListener
-    {
+    public class ReturnsWrongListener implements IListener {
 
-
-        public void handle(IEvent iEvent, ResultReference ref)
-        {
+        public void handle(IEvent iEvent, ResultReference ref) {
             ref.setResult(new FooImpl());
         }
     }
-
-
 }
