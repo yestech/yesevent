@@ -39,7 +39,7 @@ public class DefaultOrderEventMulticaster<EVENT extends IEvent, RESULT> extends 
                             logger.debug(String.format("Listener %s Registered against Event %s",
                                     listener.getClass().getSimpleName(), eventClass.getSimpleName()));
                         }
-                        getListenerMap().put(eventClass, listener);
+                        addListener(eventClass, listener);
                     }
                 } else {
                     String msg = String.format("%s must contain an ListenedEvents annotation",

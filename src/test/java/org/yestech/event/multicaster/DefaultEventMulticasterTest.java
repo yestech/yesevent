@@ -9,7 +9,6 @@ package org.yestech.event.multicaster;
 
 import org.yestech.event.annotation.AsyncListener;
 import org.yestech.event.annotation.EventResultType;
-import org.yestech.event.annotation.ListenedEvents;
 import org.yestech.event.*;
 import static com.google.common.collect.Lists.newArrayList;
 import com.google.common.collect.Multimap;
@@ -26,6 +25,7 @@ import java.util.Collection;
 import java.util.List;
 import org.yestech.event.annotation.RegisterEvent;
 import org.yestech.event.annotation.RegisteredEvents;
+import org.yestech.event.multicaster.DefaultEventMulticaster.ListenerAdapter;
 
 /**
  * @author A.J. Wright
@@ -56,11 +56,11 @@ public class DefaultEventMulticasterTest {
         assertNotNull(multicaster);
         assertTrue(multicaster instanceof IEventMulticaster);
         DefaultEventMulticaster mc = (DefaultEventMulticaster) multicaster;
-        Multimap<Class, IListener> listenerMap = mc.getListenerMap();
+        Multimap<Class, ListenerAdapter> listenerMap = mc.getListenerMap();
         assertNotNull(listenerMap);
-        Collection<IListener> eventList = listenerMap.get(Event1.class);
+        Collection<ListenerAdapter> eventList = listenerMap.get(Event1.class);
         assertEquals(2, eventList.size());
-        Listener1 iListener = (Listener1) eventList.iterator().next();
+        Listener1 iListener = (Listener1) eventList.iterator().next().getAdaptee();
         Foo foo = iListener.getFoo();
         assertNotNull(foo);
 
@@ -78,12 +78,13 @@ public class DefaultEventMulticasterTest {
         multicastor.addListeners(listeners);
         multicastor.init();
         multicastor.getListenerMap();
-        Multimap<Class, IListener> listenerMap = multicastor.getListenerMap();
+        Multimap<Class, ListenerAdapter> listenerMap = multicastor.getListenerMap();
         assertNotNull(listenerMap);
-        Collection<IListener> eventList = listenerMap.get(Event1.class);
+        Collection<ListenerAdapter> eventList = listenerMap.get(Event1.class);
         assertEquals(2, eventList.size());
-        assertEquals(listener1, eventList.toArray()[0]);
-        assertEquals(listener2, eventList.toArray()[1]);
+        ListenerAdapter[] listenersArray = eventList.toArray(new ListenerAdapter[2]);
+        assertEquals(listener1, listenersArray[0].getAdaptee());
+        assertEquals(listener2, listenersArray[1].getAdaptee());
     }
 
     @Test
@@ -96,7 +97,7 @@ public class DefaultEventMulticasterTest {
         multicastor.init();
         multicastor.process(new Event1());
 
-        Thread.currentThread().sleep(1000);
+        Thread.sleep(1000);
         assertTrue(asyncListener.isCalled());
     }
 

@@ -5,7 +5,6 @@
  *
  * http://www.opensource.org/licenses/lgpl-3.0.html
  */
-
 package org.yestech.event.multicaster;
 
 import org.yestech.event.annotation.AsyncListener;
@@ -41,9 +40,7 @@ import org.yestech.event.annotation.RegisteredEvents;
 public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> extends BaseEventMulticaster<EVENT, RESULT> {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultEventMulticaster.class);
-
-    private final Multimap<Class, IListener> listenerMap = ArrayListMultimap.create();
-    
+    private final Multimap<Class, ListenerAdapter> listenerMap = ArrayListMultimap.create();
     private ExecutorService pool;
     private int corePoolSize = 1;
     private int maximumPoolSize = 10;
@@ -116,7 +113,7 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> extends BaseE
                 addListeners(listenerGroup);
             }
         }
-        
+
         initializeThreadPool();
     }
 
@@ -154,38 +151,30 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> extends BaseE
                         }
                         tempListenerList.add(container);
                     }
-                }
-                else {
+                } else {
                     String msg = String.format("%s must contain an RegisteredEvents annotation",
                             listener.getClass().getSimpleName());
                     logger.error(msg);
                     throw new InvalidListenerException(msg);
                 }
             }
-            for (Map.Entry<Class, List<ListenerContainer>> tempEntry : tempListenerMap.entrySet()) {
-                Class<? extends IEvent> event = tempEntry.getKey();
-                List<ListenerContainer> tempListenersList = tempEntry.getValue();
-                Collections.sort(tempListenersList);
-                for (ListenerContainer listenerContainer : tempListenersList) {
-                    listenerMap.put(event, listenerContainer.getListener());
-                }
-            }
+            reorderListeners(tempListenerMap);
         }
     }
-    
-    protected Multimap<Class, IListener> getListenerMap() {
+
+    Multimap<Class, ListenerAdapter> getListenerMap() {
         return listenerMap;
     }
 
     @SuppressWarnings({"unchecked"})
     @Override
     public RESULT process(final EVENT event) {
-        Collection<IListener> list = listenerMap.get(event.getClass());
+        Collection<ListenerAdapter> list = listenerMap.get(event.getClass());
         ResultReference<RESULT> ref = new ResultReference<RESULT>();
 
         if (list != null && !list.isEmpty()) {
-            for (IListener listener : list) {
-                if (listener.getClass().isAnnotationPresent(AsyncListener.class)) {
+            for (ListenerAdapter listener : list) {
+                if (listener.isAsync()) {
                     processAsync(event, ref, listener);
                 } else {
                     listener.handle(event, ref);
@@ -201,6 +190,7 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> extends BaseE
 
     private void processAsync(final EVENT event, final ResultReference<RESULT> ref, final IListener listener) {
         pool.execute(new Runnable() {
+
             @SuppressWarnings({"unchecked"})
             @Override
             public void run() {
@@ -209,7 +199,46 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> extends BaseE
         });
     }
 
+    protected void addListener(Class<? extends IEvent> event, IListener listener) {
+        listenerMap.put(event, new ListenerAdapter(listener));
+    }
+
+    private void reorderListeners(Map<Class, List<ListenerContainer>> tempListenerMap) {
+        for (Map.Entry<Class, List<ListenerContainer>> tempEntry : tempListenerMap.entrySet()) {
+            Class<? extends IEvent> event = tempEntry.getKey();
+            List<ListenerContainer> tempListenersList = tempEntry.getValue();
+            Collections.sort(tempListenersList);
+            for (ListenerContainer listenerContainer : tempListenersList) {
+                addListener(event, listenerContainer.getListener());
+            }
+        }
+    }
+
+    class ListenerAdapter<EVENT extends IEvent, RESULT> implements IListener {
+        private IListener adaptee;
+        private boolean async;
+
+        public ListenerAdapter(IListener adaptee) {
+            this.adaptee = adaptee;
+            async = adaptee.getClass().isAnnotationPresent(AsyncListener.class);
+        }
+
+        public boolean isAsync() {
+            return async;
+        }
+
+        public IListener getAdaptee() {
+            return adaptee;
+        }
+
+        @Override
+        public void handle(IEvent event, ResultReference result) {
+            adaptee.handle(event, result);
+        }
+    }
+
     private class ListenerContainer implements Comparable<ListenerContainer> {
+
         private IListener listener;
         private Integer order;
 
@@ -233,7 +262,5 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> extends BaseE
         public int compareTo(ListenerContainer compare) {
             return order.compareTo(compare.getOrder());
         }
-
-
     }
 }

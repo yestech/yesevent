@@ -13,17 +13,14 @@ import org.yestech.event.annotation.EventResultType;
 import org.yestech.event.annotation.ListenedEvents;
 import org.yestech.event.*;
 import static com.google.common.collect.Lists.newArrayList;
-import com.google.common.collect.Multimap;
 import com.google.common.collect.Lists;
 import com.google.inject.*;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import static org.junit.Assert.*;
 import org.junit.Test;
-import org.yestech.event.guice.MulticasterBinder;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 
 /**
