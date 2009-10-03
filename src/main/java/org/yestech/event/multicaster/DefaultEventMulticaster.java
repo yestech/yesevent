@@ -32,7 +32,8 @@ import org.yestech.event.annotation.RegisterEvent;
 import org.yestech.event.annotation.RegisteredEvents;
 
 /**
- * The default event multicaster implementation
+ * The default event multicaster implementation this implementation expects all {@link IListener} that wish to be
+ * executed contain a {@link RegisteredEvents} annotation.
  *
  * @param <EVENT> An implementation of IEvent, The event type the multicaster will handle.
  * @param <RESULT> A serializable result that result type can handle.
