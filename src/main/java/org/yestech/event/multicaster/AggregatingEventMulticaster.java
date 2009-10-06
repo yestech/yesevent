@@ -25,33 +25,25 @@ import org.slf4j.LoggerFactory;
 import org.yestech.event.annotation.RegisterEvent;
 import org.yestech.event.annotation.RegisteredEvents;
 
-/**
- * The default event multicaster implementation this implementation expects all {@link IListener} that wish to be
- * executed contain a {@link RegisteredEvents} annotation.
- *
- * @param <EVENT> An implementation of IEvent, The event type the multicaster will handle.
- * @param <RESULT> A serializable result that result type can handle.
- */
-public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> extends BaseEventMulticaster<EVENT, RESULT> {
+public class AggregatingEventMulticaster<EVENT extends IEvent, RESULT extends AggregateResultReference> extends BaseEventMulticaster<EVENT, AggregateResultReference> {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultEventMulticaster.class);
+    private static final Logger logger = LoggerFactory.getLogger(AggregatingEventMulticaster.class);
     private final Multimap<Class, ListenerAdapter> listenerMap = ArrayListMultimap.create();
-    private List<IListener> listeners;
+    private List<IAggregateListener> listeners;
 
-    
     /**
      * Sets a list of {@link IListener}s
      *
      * @param listeners
      */
-    public void setListeners(List<IListener> listeners) {
+    public void setListeners(List<IAggregateListener> listeners) {
         this.listeners = listeners;
     }
 
-    public List<IListener> getListeners() {
+    public List<IAggregateListener> getListeners() {
         return listeners;
     }
-  
+
     @PostConstruct
     @Override
     public void init() {
@@ -59,10 +51,11 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> extends BaseE
         initializeThreadPool();
     }
 
-    protected void addListeners(List<IListener> listeners) {
+
+    protected void addListeners(List<IAggregateListener> listeners) {
         Map<Class, List<ListenerContainer>> tempListenerMap = Maps.newHashMap();
         if (listeners != null) {
-            for (IListener listener : listeners) {
+            for (IAggregateListener listener : listeners) {
                 RegisteredEvents listenedEvents = listener.getClass().getAnnotation(RegisteredEvents.class);
 
                 if (listenedEvents != null) {
@@ -94,29 +87,30 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> extends BaseE
         return listenerMap;
     }
 
-    @SuppressWarnings({"unchecked"})
     @Override
-    public RESULT process(final EVENT event) {
+    public AggregateResultReference process(EVENT event) {
         Collection<ListenerAdapter> list = listenerMap.get(event.getClass());
-        ResultReference<RESULT> ref = new ResultReference<RESULT>();
+        AggregateResultReference aggregateReference = new AggregateResultReference();
+
 
         if (list != null && !list.isEmpty()) {
             for (ListenerAdapter listener : list) {
+                ResultReference ref = new ResultReference();
                 if (listener.isAsync()) {
                     processAsync(event, ref, listener);
                 } else {
                     listener.handle(event, ref);
                 }
+                Object result = ref.getResult();
+                validate(event, result);
+                aggregateReference.addResult(listener.getToken(), ref);
             }
         }
-        Object result = ref.getResult();
 
-        validate(event, result);
-
-        return (RESULT) result;
+        return aggregateReference;
     }
 
-    protected void addListener(Class<? extends IEvent> event, IListener listener) {
+    protected void addListener(Class<? extends IEvent> event, IAggregateListener listener) {
         listenerMap.put(event, new ListenerAdapter(listener));
     }
 
@@ -131,11 +125,22 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> extends BaseE
         }
     }
 
-    class ListenerAdapter<EVENT extends IEvent, RESULT> implements IListener {
-        private IListener adaptee;
+    class ListenerAdapter<EVENT extends IEvent, RESULT> implements IAggregateListener {
+
+        private IAggregateListener adaptee;
         private boolean async;
 
-        public ListenerAdapter(IListener adaptee) {
+        @Override
+        public Enum getToken() {
+            return adaptee.getToken();
+        }
+
+        @Override
+        public void setToken(Enum token) {
+            adaptee.setToken(token);
+        }
+
+        public ListenerAdapter(IAggregateListener adaptee) {
             this.adaptee = adaptee;
             async = adaptee.getClass().isAnnotationPresent(AsyncListener.class);
         }
@@ -144,7 +149,7 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> extends BaseE
             return async;
         }
 
-        public IListener getAdaptee() {
+        public IAggregateListener getAdaptee() {
             return adaptee;
         }
 
@@ -156,14 +161,14 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> extends BaseE
 
     private class ListenerContainer implements Comparable<ListenerContainer> {
 
-        private IListener listener;
+        private IAggregateListener listener;
         private Integer order;
 
-        public IListener getListener() {
+        public IAggregateListener getListener() {
             return listener;
         }
 
-        public void setListener(IListener listener) {
+        public void setListener(IAggregateListener listener) {
             this.listener = listener;
         }
 

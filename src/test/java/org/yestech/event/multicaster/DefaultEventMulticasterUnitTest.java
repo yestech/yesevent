@@ -30,7 +30,7 @@ import org.yestech.event.multicaster.DefaultEventMulticaster.ListenerAdapter;
 /**
  * 
  */
-public class DefaultEventMulticasterTest {
+public class DefaultEventMulticasterUnitTest {
 
     Mockery mockery = new JUnit4Mockery();
 

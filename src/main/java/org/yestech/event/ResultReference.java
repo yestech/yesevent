@@ -15,7 +15,7 @@ import java.io.Serializable;
  *
  * @param <T> The type of result
  */
-public class ResultReference<T> implements Serializable
+final public class ResultReference<T> implements Serializable
 {
 
     protected T result;

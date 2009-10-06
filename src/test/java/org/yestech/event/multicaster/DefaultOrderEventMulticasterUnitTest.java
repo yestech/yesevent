@@ -26,7 +26,7 @@ import java.util.List;
 /**
  *
  */
-public class DefaultOrderEventMulticasterTest
+public class DefaultOrderEventMulticasterUnitTest
 {
 
     Mockery mockery = new JUnit4Mockery();

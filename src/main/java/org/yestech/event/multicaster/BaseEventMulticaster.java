@@ -7,6 +7,10 @@
  */
 package org.yestech.event.multicaster;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import org.yestech.event.annotation.EventResultType;
 import org.yestech.event.*;
 import javax.annotation.PostConstruct;
@@ -24,8 +28,44 @@ public abstract class BaseEventMulticaster<EVENT extends IEvent, RESULT> impleme
 
     private static final Logger logger = LoggerFactory.getLogger(BaseEventMulticaster.class);
     private boolean checkResultType;
+    private ExecutorService pool;
+    private int corePoolSize = 1;
+    private int maximumPoolSize = 10;
+    private long keepAliveTime = 60;
 
     public BaseEventMulticaster() {
+    }
+
+    public ExecutorService getPool() {
+        return pool;
+    }
+
+    public void setPool(ExecutorService pool) {
+        this.pool = pool;
+    }
+
+    public int getCorePoolSize() {
+        return corePoolSize;
+    }
+
+    public void setCorePoolSize(int corePoolSize) {
+        this.corePoolSize = corePoolSize;
+    }
+
+    public int getMaximumPoolSize() {
+        return maximumPoolSize;
+    }
+
+    public void setMaximumPoolSize(int maximumPoolSize) {
+        this.maximumPoolSize = maximumPoolSize;
+    }
+
+    public long getKeepAliveTime() {
+        return keepAliveTime;
+    }
+
+    public void setKeepAliveTime(long keepAliveTime) {
+        this.keepAliveTime = keepAliveTime;
     }
 
     @Override
@@ -40,11 +80,34 @@ public abstract class BaseEventMulticaster<EVENT extends IEvent, RESULT> impleme
 
     @PreDestroy
     public void destroy() {
+        if (pool != null) {
+            getPool().shutdown();
+        }
     }
 
     @PostConstruct
     public void init() {
     }
+
+    protected void initializeThreadPool() {
+        if (pool == null) {
+            pool = new ThreadPoolExecutor(corePoolSize, maximumPoolSize,
+                    keepAliveTime, TimeUnit.SECONDS,
+                    new LinkedBlockingDeque<Runnable>());
+        }
+    }
+
+    protected void processAsync(final EVENT event, final ResultReference<RESULT> ref, final IListener listener) {
+        pool.execute(new Runnable() {
+
+            @SuppressWarnings({"unchecked"})
+            @Override
+            public void run() {
+                listener.handle(event, ref);
+            }
+        });
+    }
+
 
     protected void validate(EVENT event, Object result) {
         if (checkResultType) {
