@@ -8,7 +8,7 @@
 package org.yestech.event.multicaster;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.yestech.event.annotation.EventResultType;
@@ -33,8 +33,14 @@ public abstract class BaseEventMulticaster<EVENT extends IEvent, RESULT> impleme
     private int maximumPoolSize = 10;
     private long keepAliveTime = 60;
 
-    public BaseEventMulticaster() {
+    @Override
+    public <L extends IListener> void deregisterListener(L listener) {
     }
+
+    @Override
+    public <L extends IListener> void registerListener(L listener) {
+    }
+
 
     public ExecutorService getPool() {
         return pool;
@@ -93,11 +99,12 @@ public abstract class BaseEventMulticaster<EVENT extends IEvent, RESULT> impleme
         if (pool == null) {
             pool = new ThreadPoolExecutor(corePoolSize, maximumPoolSize,
                     keepAliveTime, TimeUnit.SECONDS,
-                    new LinkedBlockingDeque<Runnable>());
+                    new LinkedBlockingQueue<Runnable>());
         }
     }
 
     protected void processAsync(final EVENT event, final ResultReference<RESULT> ref, final IListener listener) {
+        //TODO implements returning results from async listeners
         pool.execute(new Runnable() {
 
             @SuppressWarnings({"unchecked"})
@@ -107,7 +114,6 @@ public abstract class BaseEventMulticaster<EVENT extends IEvent, RESULT> impleme
             }
         });
     }
-
 
     protected void validate(EVENT event, Object result) {
         if (checkResultType) {

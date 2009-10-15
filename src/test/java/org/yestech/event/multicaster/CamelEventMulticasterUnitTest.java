@@ -23,26 +23,27 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
-import org.jmock.Mockery;
 import org.jmock.Expectations;
-import org.jmock.integration.junit4.JMock;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import static org.mockito.Mockito.*;
+import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * 
  */
-@RunWith(JMock.class)
+@RunWith(MockitoJUnitRunner.class)
 public class CamelEventMulticasterUnitTest {
 
     private DefaultCamelContext camelContext;
     private DefaultProducerTemplate template;
     private CamelEventMulticaster<TestCamelEvent, String> multicaster;
-    private Mockery context = new Mockery();
+
+    @Mock
     private Registry registry;
 
     @Before
     public void setUp() throws Exception {
-        registry = context.mock(Registry.class, "registry");
         multicaster = new CamelEventMulticaster<TestCamelEvent, String>();
         camelContext = new DefaultCamelContext(registry);
         camelContext.start();
@@ -61,19 +62,8 @@ public class CamelEventMulticasterUnitTest {
         CamelEventMulticaster<TestRawCamelEvent, Exchange> multicaster = new CamelEventMulticaster<TestRawCamelEvent, Exchange>();
         multicaster.setDefaultContext(camelContext);
         final String defaultEndPoint = "direct:test";
-        context.checking(new Expectations() {
+        initializeRegistry();
 
-            {
-                oneOf(registry).lookup("direct");
-                will(returnValue(new DirectComponent()));
-                oneOf(registry).lookup("bean");
-                will(returnValue(new BeanComponent()));
-                oneOf(registry).lookup("finished");
-                will(returnValue(new TestBean()));
-                oneOf(registry).lookup("CamelBeanParameterMappingStrategy", ParameterMappingStrategy.class);
-                will(returnValue(new DefaultParameterMappingStrategy()));
-            }
-        });
         camelContext.addRoutes(new RouteBuilder() {
 
             public void configure() {
@@ -83,6 +73,7 @@ public class CamelEventMulticasterUnitTest {
         TestRawCamelEvent event = new TestRawCamelEvent();
         event.setDefaultEndPointUri(defaultEndPoint);
         final Exchange result = multicaster.process(event);
+        verifyRegistry();
         assertNotNull(result);
         assertEquals(TestBean.TALKING, result.getIn().getBody());
     }
@@ -91,19 +82,7 @@ public class CamelEventMulticasterUnitTest {
     public void testProcessDefaultContext() throws Exception {
         multicaster.setDefaultContext(camelContext);
         final String defaultEndPoint = "direct:test";
-        context.checking(new Expectations() {
-
-            {
-                oneOf(registry).lookup("direct");
-                will(returnValue(new DirectComponent()));
-                oneOf(registry).lookup("bean");
-                will(returnValue(new BeanComponent()));
-                oneOf(registry).lookup("finished");
-                will(returnValue(new TestBean()));
-                oneOf(registry).lookup("CamelBeanParameterMappingStrategy", ParameterMappingStrategy.class);
-                will(returnValue(new DefaultParameterMappingStrategy()));
-            }
-        });
+        initializeRegistry();
         camelContext.addRoutes(new RouteBuilder() {
 
             public void configure() {
@@ -113,6 +92,7 @@ public class CamelEventMulticasterUnitTest {
         TestCamelEvent event = new TestCamelEvent();
         event.setDefaultEndPointUri(defaultEndPoint);
         final String result = multicaster.process(event);
+        initializeRegistry();
         assertNotNull(result);
         assertEquals(TestBean.TALKING, result);
     }
@@ -122,19 +102,7 @@ public class CamelEventMulticasterUnitTest {
         TestCamelEvent event = new TestCamelEvent();
         multicaster.getContexts().put(event.getEventName(), camelContext);
         final String defaultEndPoint = "direct:test";
-        context.checking(new Expectations() {
-
-            {
-                oneOf(registry).lookup("direct");
-                will(returnValue(new DirectComponent()));
-                oneOf(registry).lookup("bean");
-                will(returnValue(new BeanComponent()));
-                oneOf(registry).lookup("finished");
-                will(returnValue(new TestBean()));
-                oneOf(registry).lookup("CamelBeanParameterMappingStrategy", ParameterMappingStrategy.class);
-                will(returnValue(new DefaultParameterMappingStrategy()));
-            }
-        });
+        initializeRegistry();
         camelContext.addRoutes(new RouteBuilder() {
 
             public void configure() {
@@ -143,6 +111,7 @@ public class CamelEventMulticasterUnitTest {
         });
         event.setDefaultEndPointUri(defaultEndPoint);
         final String result = multicaster.process(event);
+        verifyRegistry();
         assertNotNull(result);
         assertEquals(TestBean.TALKING, result);
     }
@@ -153,20 +122,7 @@ public class CamelEventMulticasterUnitTest {
         multicaster.getContexts().put(event.getEventName(), camelContext);
         final String defaultEndPoint = "direct:test";
         final String lastEndPoint = "bean:finished?method=talk";
-        
-        context.checking(new Expectations() {
-
-            {
-                oneOf(registry).lookup("direct");
-                will(returnValue(new DirectComponent()));
-                oneOf(registry).lookup("bean");
-                will(returnValue(new BeanComponent()));
-                oneOf(registry).lookup("finished");
-                will(returnValue(new TestBean()));
-                oneOf(registry).lookup("CamelBeanParameterMappingStrategy", ParameterMappingStrategy.class);
-                will(returnValue(new DefaultParameterMappingStrategy()));
-            }
-        });
+        initializeRegistry();
         camelContext.addRoutes(new RouteBuilder() {
 
             public void configure() {
@@ -175,6 +131,7 @@ public class CamelEventMulticasterUnitTest {
         });
         event.setDefaultEndPointUri(defaultEndPoint);
         final String result = multicaster.process(event);
+        verifyRegistry();
         assertNotNull(result);
         assertEquals(TestBean.TALKING, result);
     }
@@ -214,5 +171,19 @@ public class CamelEventMulticasterUnitTest {
         public String talk() {
             return TALKING;
         }
+    }
+
+    private void initializeRegistry() {
+        when(registry.lookup("direct")).thenReturn(new DirectComponent());
+        when(registry.lookup("bean")).thenReturn(new BeanComponent());
+        when(registry.lookup("finished")).thenReturn(new TestBean());
+        when(registry.lookup("CamelBeanParameterMappingStrategy", ParameterMappingStrategy.class)).thenReturn(new DefaultParameterMappingStrategy());
+    }
+
+    private void verifyRegistry() {
+        verify(registry).lookup("direct");
+        verify(registry).lookup("bean");
+        verify(registry).lookup("finished");
+        verify(registry).lookup("CamelBeanParameterMappingStrategy", ParameterMappingStrategy.class);
     }
 }

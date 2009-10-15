@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.Test;
 import org.yestech.event.AggregateResultReference;
 import org.yestech.event.BaseEvent;
+import org.yestech.event.BaseListener;
 import org.yestech.event.IAggregateListener;
 import org.yestech.event.IEvent;
 import org.yestech.event.ResultReference;
@@ -61,7 +62,7 @@ public class AggregatingEventMulticasterUnitTest {
     @RegisteredEvents(events = {
         @RegisterEvent(event = Event1.class, order = 1)
     })
-    public class Listener1 implements IAggregateListener {
+    public class Listener1 extends BaseListener implements IAggregateListener {
 
         private Foo foo;
 
@@ -93,5 +94,6 @@ public class AggregatingEventMulticasterUnitTest {
         public String toString() {
             return "Listener1: " + super.toString();
         }
+
     }
 }

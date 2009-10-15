@@ -10,7 +10,7 @@ package org.yestech.event.multicaster;
 import org.yestech.event.annotation.AsyncListener;
 import org.yestech.event.*;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Lists;
+import static com.google.common.collect.Lists.newArrayList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 
@@ -29,7 +29,12 @@ public class AggregatingEventMulticaster<EVENT extends IEvent, RESULT extends Ag
 
     private static final Logger logger = LoggerFactory.getLogger(AggregatingEventMulticaster.class);
     private final Multimap<Class, ListenerAdapter> listenerMap = ArrayListMultimap.create();
-    private List<IAggregateListener> listeners;
+    private List<IAggregateListener> listeners = newArrayList();
+
+    @Override
+    public <L extends IListener> void registerListener(L listener) {
+        listeners.add((IAggregateListener) listener);
+    }
 
     /**
      * Sets a list of {@link IListener}s
@@ -51,7 +56,6 @@ public class AggregatingEventMulticaster<EVENT extends IEvent, RESULT extends Ag
         initializeThreadPool();
     }
 
-
     protected void addListeners(List<IAggregateListener> listeners) {
         Map<Class, List<ListenerContainer>> tempListenerMap = Maps.newHashMap();
         if (listeners != null) {
@@ -67,7 +71,7 @@ public class AggregatingEventMulticaster<EVENT extends IEvent, RESULT extends Ag
                         container.setOrder(order);
                         List<ListenerContainer> tempListenerList = tempListenerMap.get(event);
                         if (tempListenerList == null) {
-                            tempListenerList = Lists.newArrayList();
+                            tempListenerList = newArrayList();
                             tempListenerMap.put(event, tempListenerList);
                         }
                         tempListenerList.add(container);
@@ -125,7 +129,7 @@ public class AggregatingEventMulticaster<EVENT extends IEvent, RESULT extends Ag
         }
     }
 
-    class ListenerAdapter<EVENT extends IEvent, RESULT> implements IAggregateListener {
+    class ListenerAdapter<EVENT extends IEvent, RESULT> extends BaseListener implements IAggregateListener {
 
         private IAggregateListener adaptee;
         private boolean async;
@@ -156,6 +160,16 @@ public class AggregatingEventMulticaster<EVENT extends IEvent, RESULT extends Ag
         @Override
         public void handle(IEvent event, ResultReference result) {
             adaptee.handle(event, result);
+        }
+
+        @Override
+        public void deregister() {
+            getMulticaster().deregisterListener(adaptee);
+        }
+
+        @Override
+        public void register() {
+            getMulticaster().registerListener(adaptee);
         }
     }
 

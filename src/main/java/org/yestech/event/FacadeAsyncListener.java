@@ -11,6 +11,7 @@ import org.yestech.event.annotation.AsyncListener;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.util.List;
+import org.yestech.event.multicaster.IEventMulticaster;
 
 /**
  * A simple listener that executes a sequence of listeners in the background.
@@ -18,7 +19,7 @@ import java.util.List;
  */
 @SuppressWarnings("unchecked")
 @AsyncListener
-public class FacadeAsyncListener<EVENT extends IEvent, RESULT> implements IListener {
+public class FacadeAsyncListener<EVENT extends IEvent, RESULT> extends BaseListener implements IListener {
     private List<IListener> listeners;
 
     public List getListeners() {

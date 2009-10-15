@@ -14,8 +14,6 @@ import static com.google.common.collect.Lists.newArrayList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Lists;
 import com.google.inject.*;
-import org.jmock.Mockery;
-import org.jmock.integration.junit4.JUnit4Mockery;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.yestech.event.guice.MulticasterBinder;
@@ -31,8 +29,6 @@ import org.yestech.event.multicaster.DefaultEventMulticaster.ListenerAdapter;
  * 
  */
 public class DefaultEventMulticasterUnitTest {
-
-    Mockery mockery = new JUnit4Mockery();
 
     @Test
     public void testGuiceWiring() {
@@ -124,7 +120,7 @@ public class DefaultEventMulticasterUnitTest {
         @RegisterEvent(event = Event1.class)
     })
     @AsyncListener
-    public static class TestAsyncListener implements IListener<Event1, TestResult> {
+    public static class TestAsyncListener  extends BaseListener<Event1, TestResult> {
 
         private boolean called;
 
@@ -156,7 +152,7 @@ public class DefaultEventMulticasterUnitTest {
     public static class Event2 extends BaseEvent {
     }
 
-    public class InvalidListener implements IListener {
+    public class InvalidListener extends BaseListener {
 
         @Override
         public void handle(IEvent iEvent, ResultReference result) {
@@ -166,7 +162,7 @@ public class DefaultEventMulticasterUnitTest {
     @RegisteredEvents(events = {
         @RegisterEvent(event = Event1.class, order = 1)
     })
-    public class Listener1 implements IListener {
+    public class Listener1 extends BaseListener {
 
         private Foo foo;
 
@@ -192,7 +188,7 @@ public class DefaultEventMulticasterUnitTest {
         @RegisterEvent(event = Event1.class, order = 2),
         @RegisterEvent(event = Event2.class)
     })
-    public class Listener2 implements IListener {
+    public class Listener2 extends BaseListener {
 
         public void handle(IEvent iEvent, ResultReference ref) {
         }
@@ -206,7 +202,7 @@ public class DefaultEventMulticasterUnitTest {
     @RegisteredEvents(events = {
         @RegisterEvent(event = Event2.class)
     })
-    public class Listener3 implements IListener {
+    public class Listener3 extends BaseListener {
 
         public void handle(IEvent event, ResultReference ref) {
         }
@@ -219,7 +215,7 @@ public class DefaultEventMulticasterUnitTest {
     @RegisteredEvents(events = {
         @RegisterEvent(event = RequiredIntegerEvent.class)
     })
-    public class ReturnsWrongListener implements IListener {
+    public class ReturnsWrongListener extends BaseListener {
 
         public void handle(IEvent iEvent, ResultReference ref) {
             ref.setResult(new FooImpl());

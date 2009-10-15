@@ -40,4 +40,18 @@ public interface IEventMulticaster<EVENT extends IEvent, RESULT>
      */
     RESULT process(EVENT event);
 
+    /**
+     * Registers a listener with an event it can handle.
+     *
+     * @param listener Listener to register
+     */
+     <L extends IListener> void registerListener(L listener);
+
+    /**
+     * DeRegisters a listener from and event it can handle.
+     *
+     * @param listener Listener to deregister
+     */
+    <L extends IListener> void deregisterListener(L listener);
+
 }

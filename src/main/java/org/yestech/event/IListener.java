@@ -8,6 +8,8 @@
 
 package org.yestech.event;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import org.yestech.event.annotation.ListenedEvents;
 import org.yestech.event.annotation.RegisteredEvents;
 import org.yestech.event.multicaster.IEventMulticaster;
@@ -24,6 +26,41 @@ import org.yestech.event.multicaster.IEventMulticaster;
 public interface IListener<EVENT extends IEvent, RESULT>
 {
 
+    /**
+     * Called by the {@link IEventMulticaster} when the Event is fired.
+     *
+     * @param event Event registered
+     * @param result The result to return
+     */
     void handle(EVENT event, ResultReference<RESULT> result);
+
+    /**
+     * The Multicaster to use when registering the listener.  Should only be
+     * called on Construction.
+     *
+     * @param multicaster The Multicaster
+     */
+    void setMulticaster(IEventMulticaster<EVENT, RESULT> multicaster);
+
+    /**
+     * Result the Multicaster to use when registering the listener.
+     *
+     * @return The multicaster
+     */
+    IEventMulticaster<EVENT, RESULT> getMulticaster();
+
+    /**
+     * Registers the Listener with the {@link IEventMulticaster} and all
+     * associated events the listener can handle.
+     */
+    @PostConstruct
+    public void register();
+
+    /**
+     * DeRegisters the Listener with the {@link IEventMulticaster} and all
+     * associated events the listener can handle.
+     */
+    @PreDestroy
+    public void deregister();
 
 }

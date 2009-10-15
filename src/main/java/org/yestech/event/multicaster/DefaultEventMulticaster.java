@@ -10,7 +10,7 @@ package org.yestech.event.multicaster;
 import org.yestech.event.annotation.AsyncListener;
 import org.yestech.event.*;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Lists;
+import static com.google.common.collect.Lists.newArrayList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 
@@ -36,9 +36,13 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> extends BaseE
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultEventMulticaster.class);
     private final Multimap<Class, ListenerAdapter> listenerMap = ArrayListMultimap.create();
-    private List<IListener> listeners;
+    private List<IListener> listeners = newArrayList();
 
-    
+    @Override
+    public <L extends IListener> void registerListener(L listener) {
+        listeners.add(listener);
+    }
+
     /**
      * Sets a list of {@link IListener}s
      *
@@ -74,7 +78,7 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> extends BaseE
                         container.setOrder(order);
                         List<ListenerContainer> tempListenerList = tempListenerMap.get(event);
                         if (tempListenerList == null) {
-                            tempListenerList = Lists.newArrayList();
+                            tempListenerList = newArrayList();
                             tempListenerMap.put(event, tempListenerList);
                         }
                         tempListenerList.add(container);
@@ -131,7 +135,7 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> extends BaseE
         }
     }
 
-    class ListenerAdapter<EVENT extends IEvent, RESULT> implements IListener {
+    class ListenerAdapter<EVENT extends IEvent, RESULT> extends BaseListener {
         private IListener adaptee;
         private boolean async;
 
@@ -152,6 +156,17 @@ public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> extends BaseE
         public void handle(IEvent event, ResultReference result) {
             adaptee.handle(event, result);
         }
+
+        @Override
+        public void deregister() {
+            getMulticaster().deregisterListener(adaptee);
+        }
+
+        @Override
+        public void register() {
+            getMulticaster().registerListener(adaptee);
+        }
+
     }
 
     private class ListenerContainer implements Comparable<ListenerContainer> {
