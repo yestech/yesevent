@@ -9,6 +9,9 @@ package org.yestech.event.multicaster;
 
 import org.yestech.event.annotation.AsyncListener;
 import org.yestech.event.*;
+import org.yestech.event.listener.BaseListener;
+import org.yestech.event.listener.IListener;
+import org.yestech.event.event.IEvent;
 import com.google.common.collect.ArrayListMultimap;
 import static com.google.common.collect.Lists.newArrayList;
 import com.google.common.collect.Maps;
@@ -24,14 +27,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yestech.event.annotation.RegisterEvent;
 import org.yestech.event.annotation.RegisteredEvents;
+import org.springframework.stereotype.Component;
 
 /**
  * The default event multicaster implementation this implementation expects all {@link IListener} that wish to be
- * executed contain a {@link RegisteredEvents} annotation.
+ * executed contain a {@link RegisteredEvents} annotation.   It binds to a spring bean with id "eventMulticaster"
  *
  * @param <EVENT> An implementation of IEvent, The event type the multicaster will handle.
  * @param <RESULT> A serializable result that result type can handle.
  */
+@Component("eventMulticaster")
 public class DefaultEventMulticaster<EVENT extends IEvent, RESULT> extends BaseEventMulticaster<EVENT, RESULT> {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultEventMulticaster.class);

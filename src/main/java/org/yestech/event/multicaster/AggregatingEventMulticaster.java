@@ -9,6 +9,10 @@ package org.yestech.event.multicaster;
 
 import org.yestech.event.annotation.AsyncListener;
 import org.yestech.event.*;
+import org.yestech.event.listener.BaseListener;
+import org.yestech.event.listener.IAggregateListener;
+import org.yestech.event.listener.IListener;
+import org.yestech.event.event.IEvent;
 import com.google.common.collect.ArrayListMultimap;
 import static com.google.common.collect.Lists.newArrayList;
 import com.google.common.collect.Maps;
@@ -24,7 +28,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yestech.event.annotation.RegisterEvent;
 import org.yestech.event.annotation.RegisteredEvents;
+import org.springframework.stereotype.Component;
 
+/**
+ * Aggregating Multicaster.  It binds to a spring bean with id "aggregatingEventMulticaster"
+ *
+ * @param <EVENT>
+ * @param <RESULT>
+ */
+@Component("aggregatingEventMulticaster")
 public class AggregatingEventMulticaster<EVENT extends IEvent, RESULT extends AggregateResultReference> extends BaseEventMulticaster<EVENT, AggregateResultReference> {
 
     private static final Logger logger = LoggerFactory.getLogger(AggregatingEventMulticaster.class);

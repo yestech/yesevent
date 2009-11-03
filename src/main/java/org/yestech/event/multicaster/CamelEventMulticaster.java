@@ -8,7 +8,9 @@
 package org.yestech.event.multicaster;
 
 import org.yestech.event.annotation.EventResultType;
-import org.yestech.event.*;
+import org.yestech.event.event.EventUtils;
+import org.yestech.event.event.ICamelEvent;
+
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.camel.Message;
@@ -21,6 +23,7 @@ import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultMessage;
 import org.apache.camel.impl.DefaultProducerTemplate;
+import org.springframework.stereotype.Component;
 
 /**
  * A <a href="http://camel.apache.org">camel</a> based event multicaster implementation.
@@ -50,12 +53,13 @@ import org.apache.camel.impl.DefaultProducerTemplate;
  * </pre>
  * <br/>
  * If the caller would like to get the Raw camel {@link Exchange} as the result the event must contain the {@link EventResultType}
- * with a class of {@link Exchange}.
+ * with a class of {@link Exchange}.  It binds to a spring bean with id "camelEventMulticaster"
  *
  * @param <EVENT> An implementation of ICamelEvent, The event type the multicaster will handle.
  * @param <RESULT> A serializable result that result type can handle.
  */
 @SuppressWarnings({"unchecked"})
+@Component("camelEventMulticaster")
 public class CamelEventMulticaster<EVENT extends ICamelEvent, RESULT> extends BaseEventMulticaster<EVENT, RESULT> {
 
     private static final Logger logger = LoggerFactory.getLogger(CamelEventMulticaster.class);

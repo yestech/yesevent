@@ -5,7 +5,7 @@
  *
  * http://www.opensource.org/licenses/lgpl-3.0.html
  */
-package org.yestech.event;
+package org.yestech.event.event;
 
 import org.yestech.event.annotation.EventResultType;
 

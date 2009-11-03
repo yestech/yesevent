@@ -5,37 +5,34 @@
  *
  * http://www.opensource.org/licenses/lgpl-3.0.html
  */
-package org.yestech.event;
+package org.yestech.event.listener;
 
 import javax.annotation.Resource;
 import org.yestech.event.multicaster.IEventMulticaster;
+import org.yestech.event.event.IEvent;
+import org.yestech.event.listener.IListener;
 
 /**
- * Base class for {@link IListener}.
+ * Base class for {@link org.yestech.event.listener.IListener} that doesnt do anything basically its a NoOp.
  *
  */
-public abstract class BaseListener<EVENT extends IEvent, RESULT> implements IListener<EVENT, RESULT> {
-
-    private IEventMulticaster<EVENT, RESULT> multicaster;
+public abstract class NoOpListener<EVENT extends IEvent, RESULT> implements IListener<EVENT, RESULT> {
 
     @Override
     public IEventMulticaster<EVENT, RESULT> getMulticaster() {
-        return multicaster;
+        return null;
     }
 
     @Override
     @Resource(name = "eventMulticaster")
     public void setMulticaster(IEventMulticaster<EVENT, RESULT> multicaster) {
-        this.multicaster = multicaster;
     }
 
     @Override
     public void deregister() {
-        multicaster.deregisterListener(this);
     }
 
     @Override
     public void register() {
-        multicaster.registerListener(this);
     }
 }

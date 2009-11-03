@@ -7,11 +7,12 @@
  */
 package org.yestech.event.multicaster;
 
-import org.yestech.event.*;
+import org.yestech.event.event.IEvent;
+
 import javax.annotation.Resource;
 
 /**
- * Represents a base class for a service that wishes to integrate a {@link org.yestech.event.IEventMulticaster}.
+ * Represents a base class for a service that wishes to integrate a {@link org.yestech.event.multicaster.IEventMulticaster}.
  * By default it is configured to be {@link Resource} named "eventMulticaster" by Spring.
  *
  */

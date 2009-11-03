@@ -7,13 +7,14 @@
  */
 package org.yestech.event.multicaster;
 
-import org.yestech.event.*;
+import org.yestech.event.listener.IListener;
+import org.yestech.event.event.IEvent;
 
 /**
  * Interface for the event multicaster
  *
- * @see org.yestech.event.IEvent
- * @see org.yestech.event.IListener
+ * @see org.yestech.event.event.IEvent
+ * @see org.yestech.event.listener.IListener
  */
 public interface IEventMulticaster<EVENT extends IEvent, RESULT>
 {

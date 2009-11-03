@@ -18,6 +18,7 @@ import java.util.Map;
  */
 final public class AggregateResultReference implements Serializable {
     private Map<Enum<?>, ResultReference> references = new HashMap<Enum<?>, ResultReference>();
+    private static final long serialVersionUID = 6015477466847111536L;
 
     /**
      * Adds a result to the aggregate.

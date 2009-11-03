@@ -5,9 +5,11 @@
  *
  * http://www.opensource.org/licenses/lgpl-3.0.html
  */
-package org.yestech.event;
+package org.yestech.event.listener;
 
 import org.springframework.beans.factory.annotation.Required;
+import org.yestech.event.event.IEvent;
+import org.yestech.event.ResultReference;
 
 import java.util.List;
 

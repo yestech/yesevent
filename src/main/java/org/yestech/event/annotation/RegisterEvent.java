@@ -8,7 +8,8 @@
 
 package org.yestech.event.annotation;
 
-import org.yestech.event.*;
+import org.yestech.event.event.IEvent;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;

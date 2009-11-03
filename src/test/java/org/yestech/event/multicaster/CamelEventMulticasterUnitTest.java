@@ -8,7 +8,7 @@
 package org.yestech.event.multicaster;
 
 import org.yestech.event.annotation.EventResultType;
-import org.yestech.event.*;
+import org.yestech.event.event.BaseCamelEvent;
 import org.apache.camel.Exchange;
 import org.apache.camel.spi.Registry;
 import org.apache.camel.component.direct.DirectComponent;
@@ -23,7 +23,6 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
-import org.jmock.Expectations;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import static org.mockito.Mockito.*;

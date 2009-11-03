@@ -9,20 +9,24 @@ package org.yestech.event.multicaster;
 
 import org.yestech.event.annotation.ListenedEvents;
 import org.yestech.event.*;
+import org.yestech.event.listener.IListener;
+import org.yestech.event.event.IEvent;
 
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * a multicaster implementation that takes the default order that is supplied when registering
- * Listeners.
+ * Listeners.  It binds to a spring bean with id "defaultOrderEventMulticaster"
  *
  * @param <EVENT> An implementation of IEvent, The event type the multicaster will handle.
  * @param <RESULT> A serializable result that result type can handle.
  */
+@Component("defaultOrderEventMulticaster")
 public class DefaultOrderEventMulticaster<EVENT extends IEvent, RESULT> extends DefaultEventMulticaster<EVENT, RESULT> {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultOrderEventMulticaster.class);

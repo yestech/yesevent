@@ -5,13 +5,15 @@
  *
  * http://www.opensource.org/licenses/lgpl-3.0.html
  */
-package org.yestech.event;
+package org.yestech.event.listener;
 
 import org.yestech.event.annotation.AsyncListener;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.util.List;
-import org.yestech.event.multicaster.IEventMulticaster;
+
+import org.yestech.event.event.IEvent;
+import org.yestech.event.ResultReference;
 
 /**
  * A simple listener that executes a sequence of listeners in the background.

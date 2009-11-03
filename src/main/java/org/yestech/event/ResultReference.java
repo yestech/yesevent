@@ -19,6 +19,7 @@ final public class ResultReference<T> implements Serializable
 {
 
     protected T result;
+    private static final long serialVersionUID = 612067131221823345L;
 
     public T getResult()
     {

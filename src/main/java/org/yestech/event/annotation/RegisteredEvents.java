@@ -8,13 +8,12 @@
 
 package org.yestech.event.annotation;
 
-import org.yestech.event.*;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Must be added to every instance of {@link org.yestech.event.IListener}. This annotation tells what
+ * Must be added to every instance of {@link org.yestech.event.listener.IListener}. This annotation tells what
  * events the listener must listen for.  Used with the {@link DefaultEventMulticaster}.
  *
  */

@@ -10,11 +10,12 @@ package org.yestech.event;
 /**
  * Thrown if the multicaster returns a different result then the event passed in requires.
  * 
- * @see org.yestech.event.EventResultType
- * @see org.yestech.event.IEvent
+ * @see org.yestech.event.annotation.EventResultType
+ * @see org.yestech.event.event.IEvent
  */
 public class InvalidResultException extends RuntimeException
 {
+    private static final long serialVersionUID = -6049911995211890956L;
 
     public InvalidResultException()
     {

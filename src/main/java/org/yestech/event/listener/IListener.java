@@ -6,13 +6,15 @@
  * http://www.opensource.org/licenses/lgpl-3.0.html
  */
 
-package org.yestech.event;
+package org.yestech.event.listener;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import org.yestech.event.annotation.ListenedEvents;
 import org.yestech.event.annotation.RegisteredEvents;
 import org.yestech.event.multicaster.IEventMulticaster;
+import org.yestech.event.event.IEvent;
+import org.yestech.event.ResultReference;
 
 /**
  * Represents a Listener that is executed by a {@link IEventMulticaster}.  To register
